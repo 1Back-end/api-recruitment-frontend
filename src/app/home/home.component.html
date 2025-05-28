@@ -1,0 +1,123 @@
+<app-navbar></app-navbar>
+
+<br><br><br><br><br>
+<div class="container-fluid py-5 position-relative overflow-hidden vh-75">
+  <!-- Image de fond -->
+  <img src="assets/images/img_home.png"
+       alt="Image de fond"
+       class="bg-image-animated" />
+
+  <!-- Contenu visible (les deux blocs) -->
+  <div class="position-relative" style="z-index: 2;">
+    <!-- Bloc avec les boutons -->
+    <div class="container p-3 bg-light mb-5 rounded-3">
+      <div class="row justify-content-center gap-3 gap-md-0">
+        <div class="col-auto">
+          <a routerLink="/candidates/create-account" class="btn btn-primary py-3 px-4 rounded-5 text-white fw-bold">
+            <i class="fa-solid fa-cloud-arrow-up me-1"></i>
+            Candidat : Déposez votre CV
+          </a>
+        </div>
+        <div class="col-auto">
+          <a routerLink="/owners/create-account" class="btn btn-primary py-3 px-4 rounded-5 text-white fw-bold">
+            <i class="fas fa-bullhorn me-2"></i>
+            Recruteur : Publiez une offre d'emploi
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bloc du formulaire de recherche -->
+    <div class="container">
+      <div class="bg-white p-4 shadow border-0 rounded-3">
+        <form>
+          <div class="row justify-content-center align-items-end g-3">
+            <div class="col-md-3">
+              <label for="motcle" class="form-label fw-bold">Mot clé</label>
+              <input type="text" id="motcle" class="form-control" placeholder="Ex: développeur, comptable...">
+            </div>
+            <div class="col-md-3">
+              <label for="region" class="form-label fw-bold">Région</label>
+              <select id="region" class="form-select cursor-pointer">
+                <option selected disabled>Choisir une région</option>
+                <option>Centre</option>
+                <option>Littoral</option>
+                <option>Ouest</option>
+                <option>Nord</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="metier" class="form-label fw-bold">Métier</label>
+              <input type="text" id="metier" class="form-control" placeholder="Ex: ingénieur, enseignant...">
+            </div>
+            <div class="col-md-2 d-grid">
+              <button type="submit" class="btn btn-success mt-2">Valider</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="container py-5">
+  <h2 class="text-center fw-bold mb-4 title">Les entreprises qui recrutent</h2>
+  <p class="text-center text-muted mb-4">Découvrez les entreprises qui recrutent actuellement et explorez leurs offres d'emploi.</p>
+
+  <!-- Chargement -->
+  <div class="text-center my-5" *ngIf="isLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Chargement...</p>
+  </div>
+
+  <!-- Aucune entreprise -->
+  <div *ngIf="!isLoading && company.length === 0" class="text-center">
+    <img src="assets/images/404.png" alt="Aucune entreprise" style="max-width: 300px;" class="mb-3">
+    <p class="text-muted">Aucune entreprise disponible pour le moment.</p>
+  </div>
+
+  <!-- Liste des entreprises -->
+  <div class="row mt-3 justify-content-center" *ngIf="!isLoading && company.length > 0">
+    <div class="col-lg-4 col-sm-12 mb-4 mt-3" *ngFor="let c of company">
+      <div class="card border-0 shadow text-center h-100 p-3">
+        <!-- Logo entreprise -->
+        <img [src]="c.logo?.url || 'assets/images/logo_company.png'" 
+             alt="Logo de {{ c.name }}" 
+             class="rounded-pill mx-auto mb-3" 
+             style="width: 100px; height: 100px; object-fit: cover;border-radius: 20%;">
+        <!-- Nom entreprise -->
+        <h5 class="fw-bold text-uppercase title fs-5 mb-2">{{ c.name }}</h5>
+
+        <!-- Description -->
+        <p class="text-muted small mb-3 text-truncate">
+          {{ c.description?.length > 120 ? (c.description | slice:0:120) + '...' : c.description }}
+        </p>
+
+
+        <!-- Lien offres -->
+        <a [href]="c.website || '#'" target="_blank" class="btn btn-outline-primary btn-sm mt-auto py-2 rounded-3 shadow-none">
+          Voir les offres
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <nav *ngIf="!isLoading && totalPages > 1" class="mt-4">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <a class="page-link shadow-none" (click)="goToPage(currentPage - 1)">&laquo;</a>
+      </li>
+      <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"
+          [class.active]="i + 1 === currentPage">
+        <a class="page-link shadow-none" (click)="goToPage(i + 1)">{{ i + 1 }}</a>
+      </li>
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <a class="page-link shadow-none" (click)="goToPage(currentPage + 1)">&raquo;</a>
+      </li>
+    </ul>
+  </nav>
+</div>

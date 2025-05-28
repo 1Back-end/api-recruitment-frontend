@@ -27,9 +27,17 @@
               }
             ],
             "styles": [
-              "src/styles.css"
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "public/css/toastr.css",
+              "src/styles.css",
+              "node_modules/intl-tel-input/build/css/intlTelInput.css",
+              "node_modules/angular2-multiselect-dropdown/themes/default.theme.css",
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
             ],
-            "scripts": [],
+            "scripts": [
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+              "node_modules/intl-tel-input/build/js/intlTelInput.min.js"
+            ],
             "server": "src/main.server.ts",
             "outputMode": "server",
             "ssr": {
@@ -97,5 +105,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "e8ccf837-4411-4883-9cc5-f69f671837ec"
   }
 }
