@@ -1,10 +1,10 @@
 <div class="col-lg-12 col-sm-12 mb-3">
     <div class="d-flex align-items-center justify-content-between">
         <div class="mb-0">
-            <h4 class="text-uppercase fw-bold title fs-3">Liste des entreprises</h4>
+            <h4 class="text-uppercase fw-bold title fs-3">Liste des chefs d'entreprise</h4>
         </div>
         <div class="ml-auto">
-            <a (click)="get_all_company()"  class="mb-2 px-2 py-2 shadow-none btn btn-primary rounded-1 text-white btn-responsive mx-2">
+            <a (click)="get_all_owners()"  class="mb-2 px-2 py-2 shadow-none btn btn-primary rounded-1 text-white btn-responsive mx-2">
                 <i class="bi bi-arrow-clockwise"></i> Rafraichir
             </a>
         </div>
@@ -24,13 +24,12 @@
                                 <i class="fa-solid fa-filter-circle-xmark"></i>
                             </button>
                         </th>
-
-                        <th scope="col">Entreprise</th>
-                        <th scope="col">Adresse</th>
+                        <th scope="col">Photo</th>
+                        <th scope="col">Civilité</th>
+                        <th scope="col">Nom complet</th>
                         <th scope="col">Email</th>
                         <th scope="col">N° Téléphone</th>
-                        <th scope="col">Slogan</th>
-                    
+                        
                          <th scope="col">
                             <div class="d-flex gap-1 align-items-center justify-content-between">
                                 <span>Statut</span>
@@ -60,7 +59,7 @@
                             </div>
                         </th>
 
-                        <th scope="col">Crée par</th>
+                        <th scope="col">Crée le</th>
                         <th scope="col">Mise à jour</th>
 
                         <th scope="col">Actions</th>
@@ -80,38 +79,51 @@
                         </td>
                       </tr>
                     <ng-container *ngIf="!isLoading">
-                    <tr *ngFor="let company of data; let i = index">
+                    <tr *ngFor="let owner of data; let i = index">
                         <td>{{ i + 1 }}</td> <!-- Affiche le numéro de ligne -->
-                        <td>{{ company.name}}</td>
-                        <td>{{ company.address.city }},{{ company.address.country }}</td>
-                        <td>{{ company.email }}</td>
-                        <td>{{ formatPhoneNumberIntl(company.phone) }}</td>
-                        <td>{{ company.slogan }}</td>
+                        <td>
+                            <img *ngIf="owner.avatar?.url; else defaultAvatar"
+                                 [src]="owner.avatar.url"
+                                 alt="Avatar"
+                                 style="width: 50px; height: 50px; object-fit: cover;">
+                            <ng-template #defaultAvatar>
+                              <img src="assets/images/avatar_img.png" class="img-fluid img-thumbnail"
+                                   alt="Avatar par défaut"
+                                   style="width: 50px; height: 50px; object-fit: cover;">
+                            </ng-template>
+                        </td>
+                         <td>{{ owner.civility}} </td>
+
+                        <td>{{ owner.firstname | uppercase}} {{ owner.lastname | uppercase }}</td>
+
+                       
+                        <td>{{ owner.owner_email}} </td>
+                        <td>{{ formatPhoneNumberIntl(owner.phone_number) }}</td>
 
                         <td>
                             <span class="badge"
                                   [ngClass]="{
-                                    'badge-success': company.status === 'ACTIVE',
-                                    'badge-danger': company.status === 'INACTIVE',
-                                    'badge-blocked': company.status === 'CLOSED'
+                                    'badge-success': owner.status === 'ACTIVED',
+                                    'badge-danger': owner.status === 'UNACTIVED',
+                                    'badge-blocked': owner.status === 'BLOCKED'
                                   }">
-                              {{ company.status === 'ACTIVE' ? 'Activé' : (company.status === 'INACTIVE' ? 'Désactivé' : 'Bloqué') }}
+                              {{ owner.status === 'ACTIVED' ? 'Activé' : (owner.status === 'UNACTIVED' ? 'Désactivé' : 'Bloqué') }}
                             </span>
-                          </td>
+                        </td>
 
-                          <td>{{ company.owner.first_name | uppercase }} {{ company.owner.last_name | uppercase }}</td>
-                          <td>{{ company.updated_at | date: 'dd/MM/yyyy HH:mm' }}</td> <!-- Dernière mise à jour -->
-
-                          <td class="d-flex align-items-center justify-content-between">
-                            <button data-bs-toggle="modal" (click)="openCompanyDetails(company)" data-bs-target="#InfoCompany" class="btn btn-info btn-sm text-white border-0 rounded-0 mx-2">
+                        <td>{{ owner.date_added | date: 'dd/MM/yyyy HH:mm' }}</td> <!-- Date de création -->
+                        <td>{{ owner.date_modified | date: 'dd/MM/yyyy HH:mm' }}</td> <!-- Dernière mise à jour -->
+                        <td class="d-flex align-items-center justify-content-between">
+                            <button data-bs-toggle="modal" (click)="openOwnersDetails(owner)" data-bs-target="#InfOwners" class="btn btn-info text-white border-0 rounded-0 mx-2">
                                 <i class="fa-solid fa-circle-info me-1"></i> Détails
                             </button>
 
-                            <button data-bs-toggle="modal" (click)="openCompanyDetails(company)" data-bs-target="#DeleteCompany" class="btn btn-danger btn-sm  text-white border-0 rounded-0">
+                            <button data-bs-toggle="modal" (click)="openOwnersDetails(owner)" data-bs-target="#DeleteCompany" class="btn btn-danger text-white border-0 rounded-0">
                                 <i class="fa-solid fa-trash me-1"></i> Supprimer
                             </button>
+                        
 
-                          </td>
+                        
                     </ng-container>
                 </tbody>
             </table>
@@ -120,7 +132,7 @@
         <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
                 <label for="itemsPerPage" class="me-2">Afficher:</label>
-                <select class="form-select cursor-pointer" id="itemsPerPage" [(ngModel)]="titlesPerPage" (change)="get_all_company()">
+                <select class="form-select cursor-pointer" id="itemsPerPage" [(ngModel)]="titlesPerPage" (change)="get_all_owners()">
                     <option value="5">5</option>
                     <option value="10">10</option>
                     <option value="25">25</option>
@@ -160,7 +172,8 @@
       </div>
 
       <div class="modal-body">
-        Êtes-vous sûr de vouloir supprimer l'entreprise <strong>{{ selectedCompany?.name }}</strong> ?
+        Êtes-vous sûr de vouloir supprimer <strong> {{ selectedOwner?.civility}} {{ selectedOwner?.firstname | uppercase}} {{ selectedOwner?.lastname | uppercase }}</strong> ?
+       
       </div>
 
       <div class="modal-footer">
@@ -173,7 +186,7 @@
 
         <button type="button"
                 class="btn btn-danger border-0 rounded-0"
-                (click)="deleteCompany()"
+                (click)="deleteOwners()"
                 [disabled]="isDeleting">
           <ng-container *ngIf="!isDeleting; else loadingDelete">
             <i class="fa-solid fa-trash me-1"></i> Supprimer
@@ -188,58 +201,50 @@
   </div>
 </div>
 
-
 <!-- Modal -->
-<div class="modal fade" id="InfoCompany" tabindex="-1" aria-labelledby="InfoCompanyLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+<div class="modal fade" id="InfOwners" tabindex="-1" aria-labelledby="InfOwnersLabel" aria-hidden="true">
+  <div class="modal-dialog">
     <div class="modal-content">
 
+      <!-- Modal Header -->
       <div class="modal-header">
-        <h5 class="modal-title" id="InfoCompanyLabel">Informations de l'entreprise</h5>
+        <h5 class="modal-title" id="InfOwnersLabel">Changement de statut</h5>
         <button type="button" class="btn-close border-0 shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
-      <div class="modal-body" *ngIf="selectedCompany">
-        <div class="row g-3">
-          <div class="col-md-6">
-            <p><strong>Nom :</strong> {{ selectedCompany?.name }}</p>
-            <p><strong>Email :</strong> {{ selectedCompany?.email }}</p>
-            <p><strong>Téléphone :</strong> {{ formatPhoneNumberIntl(selectedCompany?.phone) }}</p>
-            <p><strong>Slogan :</strong> {{ selectedCompany?.slogan }}</p>
-            <p><strong>Site web :</strong> {{ selectedCompany?.website || 'Non renseigné' }}</p>
-            <p><strong>Adresse :</strong> {{ selectedCompany?.address?.city }}, {{ selectedCompany?.address?.country }}</p>
-          </div>
+      <!-- Modal Body -->
+      <div class="modal-body" *ngIf="selectedOwner">
+        <p>
+          Êtes-vous sûr de changer le statut de
+          <strong>{{ selectedOwner?.civility }} {{ selectedOwner?.firstname | uppercase }} {{ selectedOwner?.lastname | uppercase }}</strong> ?
+        </p>
 
-          <div class="col-md-6">
-            <p><strong>Nombre d'employés :</strong> {{ selectedCompany?.employee_count }}</p>
-            <p><strong>Description :</strong> <span class="text-muted">{{ selectedCompany?.description }}</span></p>
-            <p><strong>Propriétaire :</strong> {{ selectedCompany?.owner?.first_name }} {{ selectedCompany?.owner?.last_name }}</p>
-
-            <div class="form-floating mt-3">
-              <select class="form-select cursor-pointer"
-                      id="floatingSelect"
-                      [(ngModel)]="selectedStatus">
-                <option value="" disabled selected>Choisir une option</option>
-                <option value="ACTIVE">Activé</option>
-                <option value="INACTIVE">Désactivé</option>
-                <option value="CLOSED">Bloqué</option>
-              </select>
-              <label for="floatingSelect">Changer le statut <span class="text-danger">*</span></label>
-            </div>
-          </div>
+        <div class="form-floating mt-3">
+          <select class="form-select cursor-pointer"
+                  id="floatingSelect"
+                  [(ngModel)]="selectedStatus">
+            <option value="" disabled selected>Choisir une option</option>
+            <option value="ACTIVED">Activé</option>
+            <option value="UNACTIVED">Désactivé</option>
+            <option value="BLOCKED">Bloqué</option>
+          </select>
+          <label for="floatingSelect">Changer le statut <span class="text-danger">*</span></label>
         </div>
       </div>
 
+      <!-- Modal Footer -->
       <div class="modal-footer">
-        <button type="button" [disabled]="isLoading"
+        <button type="button"
                 class="btn btn-secondary px-2 py-2 rounded-0 border-0"
-                data-bs-dismiss="modal">
+                data-bs-dismiss="modal"
+                [disabled]="isLoading">
           <i class="fa-solid fa-circle-xmark me-1"></i> Annuler
         </button>
 
-        <button class="px-2 py-2 btn btn-primary rounded-0 text-white border-0"
-                [disabled]="!selectedStatus || isLoading"
-                (click)="changeStatus(selectedCompany?.uuid)">
+        <button type="button"
+                class="btn btn-primary px-2 py-2 rounded-0 text-white border-0"
+                (click)="changeStatus(selectedOwner?.uuid)"
+                [disabled]="!selectedStatus || isLoading">
           <ng-container *ngIf="!isLoading; else loading">
             <i class="fa-solid fa-rotate"></i> Changer le statut
           </ng-container>

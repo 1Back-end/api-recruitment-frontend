@@ -21,6 +21,7 @@ import {CandidatesCreateAccountsComponent} from './candidates/candidates-create-
 import {OwnersCreateAccountsComponent} from './owners/owners-create-accounts/owners-create-accounts.component';
 import {OffersFreelanceComponent} from './offers-freelance/offers-freelance.component';
 import {CompanyComponent} from './main/company/company.component';
+import {OwnersComponent} from './main/owners/owners.component';
 
 
 
@@ -43,6 +44,7 @@ export const routes: Routes = [
         { path: 'users/add', component: AddUtilisateursComponent, canActivate: [AuthGuard] },
         { path: 'users/edit/:uuid', component: EditUtilisateursComponent, canActivate: [AuthGuard] },
         { path : 'main/company', component:CompanyComponent,canActivate:[AuthGuard]},
+        { path : 'main/owners', component:OwnersComponent,canActivate:[AuthGuard]},
         { path: '', redirectTo: '/admin/dashboard', pathMatch: 'full' }
       ]
     },

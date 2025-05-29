@@ -35,7 +35,16 @@ export class MenuComponent {
       id: 'company',
       path: '/admin/main/company',
       label: 'Gestion des entreprises',
-      icon: 'fa-solid fa-house-laptop', // Icône pour réception
+      icon: 'fa-solid fa-building-user', // Icône pour réception
+      visibleFor: ['ADMIN','SUPER_ADMIN'],
+      children: [],
+      subMenuRoutes: [],
+    },
+    {
+      id: 'owners',
+      path: '/admin/main/owners',
+      label: 'Gestion des chefs d’entreprise',
+      icon: 'fa-solid fa-user-secret', // Icône pour réception
       visibleFor: ['ADMIN','SUPER_ADMIN'],
       children: [],
       subMenuRoutes: [],

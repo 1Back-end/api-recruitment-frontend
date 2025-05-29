@@ -7,12 +7,14 @@ import { ToastrService } from 'ngx-toastr';
 import { HttpClient ,HttpParams} from '@angular/common/http';  // Import HttpClient
 import { CONFIG } from '../../../config';
 import { FormsModule } from '@angular/forms'; 
-import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import {NavbarComponent} from '../components/navbar/navbar.component';
+import {FooterComponent} from '../components/footer/footer.component';
+import {NewslettersComponent} from '../components/newsletters/newsletters.component';
+
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, FormsModule, NavbarComponent],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, FormsModule, NavbarComponent,FooterComponent,NewslettersComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
