@@ -69,10 +69,93 @@ export class MenuComponent {
       children: [],
       subMenuRoutes: [],
     },
+
+
+    {
+      id : 'diplomas',
+      path : '/users/users/diplomas',
+      label: 'Mes diplômes',
+      icon: 'fa-solid fa-graduation-cap', // Icône pour réception
+      visibleFor: ["CANDIDATE"],
+      children: [],
+      subMenuRoutes: [],
+    },
+    {
+      id : 'experiences',
+      path : '/users/users/experiences',
+      label: 'Mes expériences',
+      icon: 'fa-solid fa-briefcase', // Icône pour réception
+      visibleFor: ["CANDIDATE"],
+      children: [],
+      subMenuRoutes: [],
+    },
+    {
+      id : 'competences',
+      path : '/users/users/competences',
+      label: 'Mes compétences',
+      icon: 'fa-solid fa-award', // Icône pour réception
+      visibleFor: ["CANDIDATE"],
+      children: [],
+      subMenuRoutes: [],
+    },
+    {
+      id : 'languages',
+      path : '/users/users/languages',
+      label: 'Mes langues',
+      icon: 'fa-solid fa-language', // Icône pour réception
+      visibleFor: ["CANDIDATE"],
+      children: [],
+      subMenuRoutes: [],
+    },
+    {
+      id : 'hobbies',
+      path : '/users/users/hobbies',
+      label: 'Centres d\'interêts',
+      icon: 'fa-solid fa-heart', // Icône pour réception
+      visibleFor: ["CANDIDATE"],
+      children: [],
+      subMenuRoutes: [],
+    },
+    {
+      id : 'others',
+      path : '/users/users/others',
+      label: 'Autres informations',
+      icon: 'fa-solid fa-circle-info', // Icône pour réception
+      visibleFor: ["CANDIDATE"],
+      children: [],
+      subMenuRoutes: [],
+    },
+    {
+      id : 'job_offers',
+      path : '/users/my_offers',
+      label: 'Mes offres d\'emploi',
+      icon: 'fa-solid fa-envelope-open-text', // Icône pour réception
+      visibleFor: ["CANDIDATE"],
+      children: [],
+      subMenuRoutes: [],
+    },
+    // {
+    //   id : 'accounts',
+    //   path : '/users/my_accounts',
+    //   label: 'Gestion de mon compte',
+    //   icon: 'fa-solid fa-user-secret', // Icône pour réception
+    //   visibleFor: ["CANDIDATE"],
+    //   children: [],
+    //   subMenuRoutes: [],
+    // },
    
-    
+    {
+      id: 'home',
+      path: '/home', // Redirige vers la page d'accueil
+      label: 'Retour à l’accueil',
+      icon: 'fa-solid fa-arrow-left', // Icône de retour
+      visibleFor: ["CANDIDATE"],
+      children: [],
+      subMenuRoutes: [],
+    }
+
   ];
- 
+
   closeCanvas() {
     this.closeOffCanvas.emit(true);
   }

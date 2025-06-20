@@ -33,19 +33,37 @@
               </li>
               
                 <li class="nav-item">
-                    <a class="nav-link me-2" routerLink="/companies">Entreprises |</a>
+                    <a class="nav-link me-2" routerLink="/companies">Entreprises</a>
                 </li>
-              <li class="nav-item">
-                <a class="nav-link me-2" routerLink="/candidates">Candidats</a>
-              </li>
             </ul>
       
-            <!-- Boutons à droite -->
-            <div class="d-flex">
-              <a routerLink="/login"class="btn btn-outline-primary me-2">Se connecter</a>
-              <a routerLink="/create-account" class="btn btn-primary">S'inscrire</a>
+            <div class="d-flex align-items-center">
+              <!-- Si connecté et rôle OWNER ou CANDIDATE -->
+              <ng-container *ngIf="authService.isAuthenticated() && (role.getUserRole() === 'OWNER' || role.getUserRole() === 'CANDIDATE'); else guestButtons">
+                <div class="dropdown">
+                  <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Mon compte
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg border-0 rounded-0">
+                    <li>
+                      <a class="dropdown-item text-success"
+                        [routerLink]="role.getUserRole() === 'OWNER' ? '/auth/dashboard' : (role.getUserRole() === 'CANDIDATE' ? '/users/users/diplomas' : '/')">
+                        <i class="fa-solid fa-circle-user me-2"></i> Gérer mon compte
+                      </a>
+                    </li>
+
+                    <li>
+                      <a class="dropdown-item text-danger" (click)="logout()">
+                      <i class="fa-solid fa-right-from-bracket me-2"></i> Déconnexion
+                    </a>
+                  </li>
+                  </ul>
+                </div>
+              </ng-container>
+
+              <!-- Si NON connecté -->
+              <ng-template #guestButtons>
+                <a routerLink="/login" class="btn btn-outline-primary me-2">Se connecter</a>
+                <a routerLink="/create-account" class="btn btn-primary">S'inscrire</a>
+              </ng-template>
             </div>
-          </div>
-        </div>
-      </nav>
-</div>

@@ -1,0 +1,124 @@
+
+<div class="modal fade" id="CvGenarate" tabindex="-1" aria-labelledby="CvGenarateLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold text-uppercase" id="CvGenarateLabel">
+          Aperçu du CV complet
+        </h5>
+        <button type="button" class="btn-close shadow-none border-0" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Contenu du CV ici -->
+        <div id="cvContent">
+          <!-- Loader -->
+          <div *ngIf="isLoadingCV" class="text-center my-5">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-3">Chargement du CV...</p>
+          </div>
+
+          <!-- Contenu du CV -->
+          <div *ngIf="!isLoadingCV && selectedCandidate">
+                <h5 class="text-primary mb-4">Informations personnelles</h5>
+                
+                <div class="row align-items-center justify-content-between">
+                  <!-- Infos à gauche -->
+                  <div class="col-md-8 col-sm-12">
+                    <p><strong>Nom :</strong> {{ selectedCandidate.civility }} {{ selectedCandidate.first_name }} {{ selectedCandidate.last_name }}</p>
+                    <p><strong>Email :</strong> {{ selectedCandidate.email }}</p>
+                    <p><strong>Téléphone :</strong> {{ formatPhoneNumberIntl(selectedCandidate.phone_number) }}</p>
+                  </div>
+
+                  <!-- Avatar à droite -->
+                  <div class="col-md-4 text-center align-self-start">
+                    <ng-container *ngIf="selectedCandidate.avatar?.url; else defaultAvatar">
+                      <img 
+                        [src]="selectedCandidate.avatar.url"
+                        alt="Avatar"
+                        class="img-thumbnail"
+                        style="width: 120px; height: 120px; object-fit: cover;">
+                    </ng-container>
+
+                    <ng-template #defaultAvatar>
+                      <img 
+                        src="assets/images/profile_user.png"
+                        alt="Avatar par défaut"
+                        class="img-thumbnail"
+                        style="width: 120px; height: 120px; object-fit: cover;">
+                    </ng-template>
+                  </div>
+                </div>
+
+
+
+                <!-- Diplômes -->
+                <div class="mt-4">
+                  <h5 class="text-primary mb-3">Liste des diplômes</h5>
+                  <div *ngIf="selectedCandidate.diplomas?.length; else noDiploma">
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item" *ngFor="let dip of selectedCandidate.diplomas">
+                        <strong>{{ dip.degree_name }}</strong> – {{ dip.institution_name }}<br>
+                        <small class="text-muted">{{ dip.start_year }} - {{ dip.end_year }} | {{ dip.address }}</small>
+                      </li>
+                    </ul>
+                  </div>
+                  <ng-template #noDiploma>
+                    <p class="text-muted">Aucun diplôme renseigné.</p>
+                  </ng-template>
+                </div>
+
+              <div class="mt-4">
+                <h5 class="text-primary mb-3">Expériences professionnelles</h5>
+                <div *ngIf="selectedCandidate.experiences?.length; else noExperience">
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item" *ngFor="let exp of selectedCandidate.experiences">
+                      <strong>{{ exp.job_title }}</strong> – {{ exp.company_name }}<br>
+                      <small class="text-muted">{{ exp.start_date | date:'dd/MM/yyyy' }} - {{ exp.end_date | date:'dd/MM/yyyy' }}</small><br>
+                      <span>{{ exp.description }}</span>
+                    </li>
+                  </ul>
+                </div>
+                <ng-template #noExperience>
+                  <p class="text-muted">Aucune expérience renseignée.</p>
+                </ng-template>
+              </div>
+
+              <div class="mt-3">
+                <h5 class="text-primary mb-3">Liste des compétences</h5>
+              <div *ngFor="let comp of selectedCandidate.competences" class="d-flex align-items-center justify-content-between mb-2">
+                <div>
+                  <strong>{{ comp.title }}</strong> 
+                  <span *ngIf="comp.is_certified" class="badge badge-success border-0 rounded-0 ms-2">Certifiée</span>
+                </div>
+                <div class="progress" style="height: 20px; width: 40%;">
+                  <div
+                    class="progress-bar bg-success"
+                    role="progressbar"
+                    [style.width.%]="comp.level"
+                    [attr.aria-valuenow]="comp.level"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    style="font-size: 12px;"
+                  >
+                    {{ comp.level }}%
+                  </div>
+                </div>
+              </div>
+              </div>
+
+
+                            
+
+            <!-- Ajouter ici les autres sections : expérience, diplômes, compétences, etc. -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary shadow-none border-0 rounded-0" data-bs-dismiss="modal">Fermer</button>
+        <button class="btn btn-success shadow-none border-0 rounded-0">
+          <i class="fa fa-download me-1"></i> Télécharger
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

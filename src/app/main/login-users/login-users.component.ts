@@ -1,0 +1,72 @@
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import { ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Component ,ChangeDetectorRef, OnInit} from '@angular/core';
+import { RouterLink } from '@angular/router';
+
+
+@Component({
+  selector: 'app-login-users',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule,RouterLink],
+  templateUrl: './login-users.component.html',
+  styleUrl: './login-users.component.css'
+})
+export class LoginUsersComponent {
+
+   LoginForm: FormGroup;
+  showPassword: boolean = false;
+  currentYear: number = new Date().getFullYear();  // Initialisation directe
+  isLoading: boolean = false;
+
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private toastr: ToastrService,
+  ) {
+    this.LoginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+    });
+  }
+  togglePasswordVisibility(event: Event): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    this.showPassword = isChecked;
+  }
+  ngOnInit(): void {
+
+  }
+  
+
+  Login() {
+  if (this.LoginForm.invalid || this.isLoading) return;
+
+  this.isLoading = true;
+
+  const { email, password } = this.LoginForm.value;
+
+  this.authService.login(email, password).subscribe({
+    next: (response) => {
+      const user = response.user;
+      localStorage.setItem('user', btoa(JSON.stringify(user)));
+
+      this.toastr.success('Connexion réussie !');
+      this.router.navigateByUrl('/home');
+
+      this.isLoading = false;
+    },
+    error: (error) => {
+      const message = error?.error?.detail || 'Une erreur est survenue';
+      this.toastr.error(message);
+      this.isLoading = false;
+    }
+  });
+}
+
+
+
+}

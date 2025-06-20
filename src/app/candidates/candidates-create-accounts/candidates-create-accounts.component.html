@@ -1,1 +1,128 @@
 <app-navbar></app-navbar>
+
+
+<br><br><br><br><br>
+
+<div class="container-fluid py-5 bg-light text-center position-relative overflow-hidden vh-50 bg-light">
+  <div class="container position-relative" style="z-index: 2;">
+    <h3 class="title fw-bold">
+      Candidats, inscrivez-vous en 1 minute !
+    </h3>
+  </div>
+</div>
+
+<div class="container-fluid p-5">
+    <div class="container">
+        <form  [formGroup]="ServiceForm" (ngSubmit)="SaveCandidates()">
+            <div class="col-lg-12 col-sm-12">
+                <div class="card border-0 bg-white rounded-0 shadow">
+                    <div class="card-header p-3 border-0 text-white rounded-0" style="background-color: #1f4283;color: white;">
+                        <h5 class="fw-bold mb-0 text-white">Vos informations <span class="text-danger">*</span></h5>
+                    </div>
+                    
+                    <div class="card-body row g-3">
+
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-floating">
+                            <select formControlName="civility" [ngClass]="{'is-invalid': ServiceForm.get('civility')?.invalid && ServiceForm.get('civility')?.touched}" class="form-select cursor-pointer" id="typeEntreprise">
+                                <option></option>
+                                <option value="MR">Mr</option>
+                                <option value="Mme">Mme</option>
+                            </select>
+                            <label for="typeEntreprise">Civilité <span class="text-danger">*</span></label>
+                            <div *ngIf="ServiceForm.get('civility')?.invalid && ServiceForm.get('civility')?.touched" class="invalid-feedback">
+                                Ce champ est requis.
+                            </div>
+                        </div>
+                    </div>
+
+
+                        <div class="col-lg-4 col-sm-12 mb-3">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" formControlName="first_name" [ngClass]="{'is-invalid': ServiceForm.get('first_name')?.invalid && ServiceForm.get('first_name')?.touched}" id="floatingInput" placeholder="name@example.com">
+                                <label for="floatingInput">Prénom <span class="text-danger">*</span></label>
+                                <div *ngIf="ServiceForm.get('first_name')?.invalid && ServiceForm.get('first_name')?.touched" class="invalid-feedback">
+                                Ce champ est requis.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-sm-12 mb-3">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" formControlName="last_name" [ngClass]="{'is-invalid': ServiceForm.get('last_name')?.invalid && ServiceForm.get('last_name')?.touched}" id="floatingInput" placeholder="name@example.com">
+                                <label for="floatingInput">Nom <span class="text-danger">*</span></label>
+                            </div>
+                            <div *ngIf="ServiceForm.get('last_name')?.invalid && ServiceForm.get('last_name')?.touched" class="invalid-feedback">
+                                Ce champ est requis.
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-sm-12 mb-3">
+                            <div class="form-floating mb-3">
+                                <input type="email" class="form-control" formControlName="email" [ngClass]="{'is-invalid': ServiceForm.get('email')?.invalid && ServiceForm.get('email')?.touched}" id="floatingInput" placeholder="name@example.com">
+                                <label for="floatingInput">Email <span class="text-danger">*</span></label>
+                                <div *ngIf="ServiceForm.get('email')?.invalid && ServiceForm.get('email')?.touched" class="invalid-feedback">
+                                    Veuillez entrer une adresse e-mail valide.
+                                </div>
+                            </div>
+                        </div>
+
+                         <div class="col-lg-4 col-sm-12 mb-3">
+                            <angular-phone-number-input
+                            id="phone_number"
+                            formControlName="phone_number"
+                            [defaultCountry]="'CM'"
+                            [ngClass]="{'is-invalid': ServiceForm.get('phone_number')?.invalid && ServiceForm.get('phone_number')?.touched}"
+                            [preferredCountries]="[]">
+                            </angular-phone-number-input>
+                            <div *ngIf="ServiceForm.get('phone_number')?.invalid && ServiceForm.get('phone_number')?.touched" class="invalid-feedback">
+                                Ce champ est requis.
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-floating">
+                            <input type="password" formControlName="password" [ngClass]="{'is-invalid': ServiceForm.get('password')?.invalid && ServiceForm.get('password')?.touched}" class="form-control" id="ville" placeholder="Ville">
+                            <label for="ville">Mot de passe <span class="text-danger">*</span></label>
+                            <div *ngIf="ServiceForm.get('password')?.invalid && ServiceForm.get('password')?.touched" class="invalid-feedback">
+                                Ce champ est requis.
+                            </div>
+                        </div>
+                        </div>
+
+
+                         <div class="d-flex justify-content-between align-items-center mt-4">
+                            <a 
+                                class="btn btn-secondary border-0 py-2 rounded-0"
+                                [class.disabled]="isLoading"
+                                [class.pointer-events-none]="isLoading"
+                                [attr.aria-disabled]="isLoading ? 'true' : null"
+                                [routerLink]="isLoading ? null : '/home'">
+                               Annuler
+                            </a>
+
+                            <button type="submit" 
+                                class="btn btn-primary border-0 px-3 py-2 rounded-0 d-flex align-items-center gap-2"
+                                [disabled]="ServiceForm.invalid || isLoading">
+                            <ng-container *ngIf="!isLoading; else loadingTpl">
+                                Créer votre compte
+                            </ng-container>
+
+                            <ng-template #loadingTpl>
+                                <i class="spinner-border spinner-border-sm"></i>
+                                Création en cours...
+                            </ng-template>
+                            </button>
+                        
+                        </div>
+
+
+
+                    </div>
+
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

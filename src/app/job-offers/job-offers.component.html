@@ -1,1 +1,91 @@
 <app-navbar></app-navbar>
+
+<br><br><br><br>
+
+
+<div class="container-fluid py-5 bg-light text-center position-relative overflow-hidden vh-50">
+  <div class="container position-relative" style="z-index: 2;">
+    <h3 class="title fw-bold mb-4">
+      Rechercher un emploi
+    </h3>
+    <input type="search" 
+           class="form-control py-3 rounded-pill mx-auto" 
+           placeholder="Tapez un mot-clé, poste, entreprise..." 
+           style="max-width: 500px;">
+  </div>
+</div>
+<div class="container-fluid p-md-5 py-5">
+  <div class="row">
+    <!-- Contenu principal (liste d'offres) -->
+    <div class="col-12">
+      <div class="row">
+        <div *ngFor="let offer of data" class="col-12 col-md-6 col-lg-4 mb-4">
+          <div class="card shadow-lg h-100 p-3 d-flex flex-column justify-content-between">
+            <!-- Titre de l'offre -->
+            <h5 class="fw-bold">{{ offer.title }}</h5>
+
+            <!-- Infos entreprise -->
+            <p class="mb-1">
+              {{ offer.owner?.company?.[0]?.name || 'Entreprise non renseignée' }}
+            </p>
+
+            <!-- Slogan entreprise (si dispo) -->
+            <p *ngIf="offer.owner?.company?.[0]?.slogan" class="text-muted fst-italic mb-1">
+              {{ offer.owner.company[0].slogan }}
+            </p>
+
+            <!-- Description de l'offre -->
+            <p class="text-truncate" style="max-height: 6em; overflow: hidden;">
+              {{ offer.description.length > 200 ? (offer.description | slice:0:200) + '...' : offer.description }}
+            </p>
+
+            <!-- Infos supplémentaires en badges -->
+            <div class="row text-center mb-3">
+              <div class="col-4">
+                <span class="badge bg-primary w-100">{{ offer.full_salary }}</span>
+              </div>
+              <div class="col-4">
+                <span class="badge bg-success w-100">{{ offer.employment_type }}</span>
+              </div>
+              <div class="col-4">
+                <span class="badge bg-info text-dark w-100">{{ offer.work_mode }}</span>
+              </div>
+            </div>
+
+            <!-- Boutons Voir plus & Postuler -->
+            <div class="d-flex justify-content-between align-items-center mt-auto">
+            <!-- Bouton Voir plus -->
+            <button class="btn btn-outline-secondary px-3 py-2 rounded-5 fw-semibold">
+                Voir plus
+            </button>
+
+            <!-- Bouton Postuler -->
+            <button 
+                class="btn"
+                [ngClass]="{
+                'btn-primary py-2 px-4 rounded-5 text-white fw-bold': authService.isAuthenticated() && role.getUserRole() === 'CANDIDATE',
+                'btn-danger py-2 px-4 rounded-5 text-white fw-bold': !authService.isAuthenticated() || role.getUserRole() !== 'CANDIDATE'
+                }"
+                (click)="
+                authService.isAuthenticated() && role.getUserRole() === 'CANDIDATE' 
+                    ? applyToOffer(offer.uuid) 
+                    : showAuthAlert()
+                "
+            >
+                Postuler
+            </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Bouton "Voir plus de profils" -->
+      <div class="text-center mt-4" *ngIf="currentPage < totalPages">
+        <button class="btn btn-primary py-3 px-4 rounded-5 text-white fw-bold" (click)="loadMore()">
+          Voir plus de profils
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

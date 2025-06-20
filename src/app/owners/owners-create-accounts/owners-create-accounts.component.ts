@@ -53,7 +53,7 @@ export class OwnersCreateAccountsComponent {
       city : ['',Validators.required],
       country : ['',Validators.required],
       slogan : ['',Validators.required],
-      website : [],
+      website : [null],
       founded_at : ['',Validators.required],
       employee_count : ['',Validators.required],
       type : ['',Validators.required],

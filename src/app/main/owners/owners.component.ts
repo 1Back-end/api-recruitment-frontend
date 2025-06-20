@@ -17,7 +17,7 @@ import { parsePhoneNumberFromString } from 'libphonenumber-js';
 export class OwnersComponent {
 
 
-    data: any[] = [];
+  data: any[] = [];
   isLoading: boolean = false;
   currentPage: number = 1;
   totalPages: number = 0;

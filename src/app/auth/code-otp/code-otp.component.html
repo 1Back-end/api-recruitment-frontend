@@ -20,7 +20,17 @@
                   </div>
                   <div class="col-12">
                     <div class="d-grid">
-                      <button class="btn btn-primary btn-lg py-3 ps-2" [disabled]="LoginForm.invalid" type="submit">Vérifier le code</button>
+                      <button class="btn btn-primary btn-lg py-3 ps-2" 
+                            [disabled]="LoginForm.invalid || isLoading" 
+                            type="submit">
+                      <ng-container *ngIf="!isLoading; else loadingTpl">
+                        Vérifier le code
+                      </ng-container>
+                      <ng-template #loadingTpl>
+                        <i class="spinner-border spinner-border-sm me-2"></i>
+                        Vérification en cours...
+                      </ng-template>
+                    </button>
                     </div>
                   </div>
                   

@@ -1,147 +1,315 @@
 <app-navbar></app-navbar>
-<br><br><br>
+
+
+<br><br><br><br>
+
+
+<div class="container-fluid py-5 bg-light text-center position-relative overflow-hidden vh-50 bg-light">
+  <div class="container position-relative" style="z-index: 2;">
+    <h3 class="title fw-bold">
+      Derniers profils sur la CVthèque
+    </h3>
+  </div>
+</div>
 
 <div class="container mt-5 py-5">
+  <div *ngIf="data.length; else noCandidates">
     <div class="row">
-        <div class="col-md-4">
-            <div class="card shadow border-0 user-card">
-                <div class="card-header">
-                    <h5>Profile</h5>
-                </div>
-                <div class="card-block">
-                    <div class="user-image">
-                        <img src="https://bootdey.com/img/Content/avatar/avatar7.png" class="img-radius" alt="User-Profile-Image">
-                    </div>
-                    <h6 class="f-w-600 m-t-25 m-b-10">Alessa Robert</h6>
-                    <p class="text-muted">Active | Male | Born 23.05.1992</p>
-                    <hr>
-                    <p class="text-muted m-t-15">Activity Level: 87%</p>
-                    <ul class="list-unstyled activity-leval">
-                        <li class="active"></li>
-                        <li class="active"></li>
-                        <li class="active"></li>
-                        <li></li>
-                        <li></li>
-                    </ul>
-                    <div class="bg-c-blue counter-block m-t-10 p-20">
-                        <div class="row">
-                            <div class="col-4">
-                                <i class="fa fa-comment"></i>
-                                <p>1256</p>
-                            </div>
-                            <div class="col-4">
-                                <i class="fa fa-user"></i>
-                                <p>8562</p>
-                            </div>
-                            <div class="col-4">
-                                <i class="fa fa-suitcase"></i>
-                                <p>189</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="m-t-15 text-muted">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
-                    <hr>
-                    <div class="row justify-content-center user-social-link">
-                        <div class="col-auto"><a href="#!"><i class="fa fa-facebook text-facebook"></i></a></div>
-                        <div class="col-auto"><a href="#!"><i class="fa fa-twitter text-twitter"></i></a></div>
-                        <div class="col-auto"><a href="#!"><i class="fa fa-dribbble text-dribbble"></i></a></div>
-                    </div>
-                </div>
+      <div class="col-lg-6 mb-4" *ngFor="let candidate of data">
+        <div class="card h-100 shadow-lg border-0 p-3 py-5">
+          <div class="row g-0 align-items-center">
+            
+            <!-- Infos à gauche -->
+            <div class="col-lg-8 col-sm-12 mb-3">
+              <h5 class="fw-bold profile-title">Profil N°{{ candidate.uuid?.slice(-8).toUpperCase() }}</h5>
+
+              <p class="mb-3"><strong>Nom :</strong> {{ candidate.civility }} {{ candidate.first_name }} {{ candidate.last_name }}</p>
+
+              <!-- Expérience -->
+              <p class="mb-3">
+                <strong>Dernière expérience :</strong>
+                <span *ngIf="candidate.experiences?.length; else noExperience">
+                  {{ candidate.experiences[0]?.job_title }} à {{ candidate.experiences[0]?.company_name }}
+                </span>
+                <ng-template #noExperience>Non renseignée</ng-template>
+              </p>
+
+              <p class="mb-3"><strong>Dernier diplôme :</strong>
+                <span *ngIf="candidate.diplomas?.length; else noDiploma">
+                  {{ candidate.diplomas[0]?.degree_name }} - {{ candidate.diplomas[0]?.institution_name }}
+                  ({{ candidate.diplomas[0]?.start_year }} - {{ candidate.diplomas[0]?.end_year }})
+                </span>
+                <ng-template #noDiploma>Non renseigné</ng-template>
+              </p>
+
+
+              <!-- Langues -->
+             <p class="mb-3"><strong>Langue :</strong>
+              <span *ngIf="candidate.languages?.length; else noLangue">
+                {{ candidate.languages[0]?.title }} ({{ candidate.languages[0]?.level.toLowerCase() }})
+              </span>
+              <ng-template #noLangue>Non renseignée</ng-template>
+            </p>
+
+
+              <!-- Compétence -->
+          <p class="mb-3"><strong>Compétence :</strong>
+            <span *ngIf="candidate.competences?.length; else noCompetence">
+              {{ candidate.competences[0]?.title }}
+            </span>
+            <ng-template #noCompetence>Non renseigné</ng-template>
+          </p>
+
+
+                          <!-- Voir plus -->
+            <div class="mt-3">
+              <ng-container *ngIf="authService.isAuthenticated() && role.getUserRole() === 'OWNER'; else guestButtons">
+                <button 
+                  data-bs-toggle="modal"
+                  data-bs-target="#CvGenarate"
+                  (click)="loadCV(candidate)"
+                  class="btn btn-primary py-3 px-4 rounded-5 text-white fw-bold">
+                  Voir le CV complet
+                </button>
+              </ng-container>
             </div>
-        </div>
-        
-        <div class="col-md-4">
-            <div class="card shadow border-0 user-card">
-                <div class="card-header">
-                    <h5>Profile</h5>
-                </div>
-                <div class="card-block">
-                    <div class="user-image">
-                        <img src="https://bootdey.com/img/Content/avatar/avatar6.png" class="img-radius" alt="User-Profile-Image">
-                    </div>
-                    <h6 class="f-w-600 m-t-25 m-b-10">Alessa Robert</h6>
-                    <p class="text-muted">Active | Male | Born 23.05.1992</p>
-                    <hr>
-                    <p class="text-muted m-t-15">Activity Level: 87%</p>
-                    <ul class="list-unstyled activity-leval">
-                        <li class="active"></li>
-                        <li class="active"></li>
-                        <li class="active"></li>
-                        <li></li>
-                        <li></li>
-                    </ul>
-                    <div class="bg-c-green counter-block m-t-10 p-20">
-                        <div class="row">
-                            <div class="col-4">
-                                <i class="fa fa-comment"></i>
-                                <p>1256</p>
-                            </div>
-                            <div class="col-4">
-                                <i class="fa fa-user"></i>
-                                <p>8562</p>
-                            </div>
-                            <div class="col-4">
-                                <i class="fa fa-suitcase"></i>
-                                <p>189</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="m-t-15 text-muted">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
-                    <hr>
-                    <div class="row justify-content-center user-social-link">
-                        <div class="col-auto"><a href="#!"><i class="fa fa-facebook text-facebook"></i></a></div>
-                        <div class="col-auto"><a href="#!"><i class="fa fa-twitter text-twitter"></i></a></div>
-                        <div class="col-auto"><a href="#!"><i class="fa fa-dribbble text-dribbble"></i></a></div>
-                    </div>
-                </div>
+
+              <!-- Si non authentifié ou pas OWNER -->
+              <ng-template #guestButtons>
+                <button 
+                  class="btn btn-outline-danger py-3 px-4 rounded-5 fw-bold"
+                  (click)="showAuthAlert()">
+                  Connexion requise
+                </button>
+              </ng-template>
             </div>
-        </div>
-        
-        <div class="col-md-4">
-            <div class="card shadow border-0 user-card">
-                <div class="card-header">
-                    <h5>Profile</h5>
-                </div>
-                <div class="card-block">
-                    <div class="user-image">
-                        <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="img-radius" alt="User-Profile-Image">
-                    </div>
-                    <h6 class="f-w-600 m-t-25 m-b-10">Alessa Robert</h6>
-                    <p class="text-muted">Active | Male | Born 23.05.1992</p>
-                    <hr>
-                    <p class="text-muted m-t-15">Activity Level: 87%</p>
-                    <ul class="list-unstyled activity-leval">
-                        <li class="active"></li>
-                        <li class="active"></li>
-                        <li class="active"></li>
-                        <li></li>
-                        <li></li>
-                    </ul>
-                    <div class="bg-c-yellow counter-block m-t-10 p-20">
-                        <div class="row">
-                            <div class="col-4">
-                                <i class="fa fa-comment"></i>
-                                <p>1256</p>
-                            </div>
-                            <div class="col-4">
-                                <i class="fa fa-user"></i>
-                                <p>8562</p>
-                            </div>
-                            <div class="col-4">
-                                <i class="fa fa-suitcase"></i>
-                                <p>189</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="m-t-15 text-muted">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
-                    <hr>
-                    <div class="row justify-content-center user-social-link">
-                        <div class="col-auto"><a href="#!"><i class="fa fa-facebook text-facebook"></i></a></div>
-                        <div class="col-auto"><a href="#!"><i class="fa fa-twitter text-twitter"></i></a></div>
-                        <div class="col-auto"><a href="#!"><i class="fa fa-dribbble text-dribbble"></i></a></div>
-                    </div>
-                </div>
+
+            <!-- Avatar à droite -->
+            <div class="col-md-4 text-center">
+              <ng-container *ngIf="candidate.avatar?.url; else defaultAvatar">
+                <img 
+                  [src]="candidate.avatar.url"
+                  alt="Avatar"
+                  class="img-fluid rounded-circle"
+                  style="width: 100px; height: 100px; object-fit: cover;">
+              </ng-container>
+
+              <ng-template #defaultAvatar>
+                <img 
+                  src="assets/images/profile_user.png"
+                  alt="Avatar par défaut"
+                  class="img-fluid rounded-circle"
+                  style="width: 100px; height: 100px; object-fit: cover;">
+              </ng-template>
             </div>
+
+          </div>
         </div>
-	</div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="text-center mt-4" *ngIf="totalPages > 1">
+      <div class="text-center mt-4" *ngIf="currentPage < totalPages">
+        <button class="btn btn-primary py-3 px-4 rounded-5 text-white fw-bold" (click)="loadMore()">Voir plus de profils</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Aucun candidat -->
+  <ng-template #noCandidates>
+    <div class="alert alert-danger text-center" role="alert">
+      Aucun candidat disponible pour le moment.
+    </div>
+  </ng-template>
+</div>
+
+
+<div class="modal fade" id="CvGenarate" tabindex="-1" aria-labelledby="CvGenarateLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold text-uppercase" id="CvGenarateLabel">
+          Aperçu du CV complet
+        </h5>
+        <button type="button" class="btn-close shadow-none border-0" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body p-2">
+        <div *ngIf="isLoadingCV" class="text-center my-5">
+          <div class="spinner-border text-primary" role="status"></div>
+          <p class="mt-3">Chargement du CV...</p>
+        </div>
+
+        <div *ngIf="!isLoadingCV && selectedCandidate" class="container-fluid">
+          <div class="row" style="min-height: 350px;">
+            
+                      
+            <div class="col-md-3 p-3 align-items-center text-white" 
+                style="background-color: rgb(42 42 46); border-radius: 0.25rem 0 0 0.25rem;">
+
+              <!-- Avatar uniquement si URL existe -->
+              <div *ngIf="selectedCandidate.avatar?.url" class="mb-4 text-center">
+                <img 
+                  [src]="selectedCandidate.avatar.url"
+                  alt="Avatar"
+                  class="img-thumbnail rounded-circle"
+                  style="width: 120px; height: 120px; object-fit: cover; margin-bottom: 15px;">
+              </div>
+
+              <div class="mb-3">
+                <!-- <p><strong>Nom :</strong><br> {{ selectedCandidate.civility }} {{ selectedCandidate.first_name }} {{ selectedCandidate.last_name }}</p> -->
+                <p><strong><i class="fa-solid fa-envelope me-2"></i> </strong> {{ selectedCandidate.email }}</p>
+                <p><strong><i class="fa-solid fa-phone me-2"></i> </strong> {{ formatPhoneNumberIntl(selectedCandidate.phone_number) }}</p>
+                <p *ngIf="selectedCandidate.personals[0]?.place_of_birth">
+                  <strong><i class="fa-solid fa-location-dot me-2"></i></strong>
+                  {{ selectedCandidate.personals[0]?.place_of_birth }}
+                </p>
+
+                <p *ngIf="selectedCandidate.personals[0]?.nationality">
+                  <strong><i class="fa-solid fa-flag me-2"></i></strong>
+                  {{ selectedCandidate.personals[0]?.nationality }}
+                </p>
+
+              </div>
+
+              <div class="mb-3" *ngIf="selectedCandidate.languages?.length > 0">
+                <h6 class="text-white mt-4 mb-3">Langues</h6>
+
+                <div *ngFor="let lang of selectedCandidate.languages" class="mb-3">
+                  <div class="progress" style="height: 12px; background-color: rgb(42 42 46);">
+                    <div
+                      class="progress-bar"
+                      role="progressbar"
+                      [style.width.%]="getLanguageLevel(lang.level)"
+                      [attr.aria-valuenow]="getLanguageLevel(lang.level)"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style="background-color: white; color: black; font-size: 11px; font-weight: 600;">
+                      {{ getLanguageLevel(lang.level) }}%
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="mb-3" *ngIf="selectedCandidate.hobbies?.length > 0">
+              <h6 class="text-white mt-4 mb-3">Centres d'intérêt</h6>
+              
+              <ul class="list-inline mb-0 ps-1">
+                <li class="list-inline-item me-2 mb-2" *ngFor="let hobby of selectedCandidate.hobbies">
+                  <span class="badge bg-light text-dark px-3 py-2 rounded-pill">
+                    {{ hobby.title }}
+                  </span>
+                </li>
+              </ul>
+            </div>
+
+            </div>
+            
+           
+            <div class="col-md-9 col-sm-12">
+              <div *ngIf="selectedCandidate">
+                <h5 class="fw-bold text-capitalize text-primary mb-3">
+                  {{ selectedCandidate.first_name }} {{ selectedCandidate.last_name }}
+                </h5>
+
+                <div *ngIf="selectedCandidate.personals?.length > 0">
+                  <p class="mb-1">
+                    <strong>{{ selectedCandidate.personals[0]?.professional_title }}</strong>
+                  </p>
+                  <p class="mall">
+                    {{ selectedCandidate.personals[0]?.title_description }}
+                  </p>
+                </div>
+              </div>
+
+
+             <!-- Diplômes -->
+              <div class="mb-4">
+                <h5 class="text-primary mb-3">Liste des diplômes</h5>
+                <div *ngIf="selectedCandidate.diplomas?.length > 0; else noDiploma">
+                  <ul class="list-group list-group-flush" style="max-width: 700px;">
+                    <li *ngFor="let dip of selectedCandidate.diplomas" class="list-group-item" style="padding: 0.5rem 1rem;">
+                      <strong>{{ dip.degree_name }}</strong><br>
+                      <small class="text-muted">
+                        {{ dip.end_year }} – {{ dip.institution_name }} 
+                        <span *ngIf="dip.address">({{ dip.address }})</span>
+                      </small>
+                    </li>
+                  </ul>
+                </div>
+                <ng-template #noDiploma>
+                  <p class="text-muted">Aucun diplôme renseigné.</p>
+                </ng-template>
+              </div>
+
+
+              <div class="mb-4">
+                  <h5 class="text-primary mb-3">Expériences professionnelles</h5>
+                  <div *ngIf="selectedCandidate.experiences?.length > 0; else noExperience">
+                    <ul class="list-group list-group-flush">
+                      <li *ngFor="let exp of selectedCandidate.experiences" class="list-group-item">
+                        <strong>{{ exp.job_title }}</strong> – {{ exp.company_name }}<br>
+                        <small class="text-muted">
+                          {{ exp.start_date | date:'dd/MM/yyyy' }} - {{ exp.end_date | date:'dd/MM/yyyy' }}
+                        </small><br>
+                        <small>{{ exp.description }}</small>
+                      </li>
+                    </ul>
+                  </div>
+                  <ng-template #noExperience>
+                    <p class="text-muted">Aucune expérience renseignée.</p>
+                  </ng-template>
+                </div>
+
+
+
+                <div class="mb-3">
+                  <h5 class="text-primary mb-3">Liste des compétences</h5>
+                  <ul class="list-group list-group-flush" style="max-width: 700px;">
+                    <li *ngFor="let comp of selectedCandidate.competences" class="list-group-item">
+                      <!-- Titre -->
+                      <strong>{{ comp.title }}</strong><br>
+
+                      <!-- Barre de progression -->
+                      <div class="progress my-1" style="height: 13px; width: 350px; min-width: 350px;">
+                        <div
+                          class="progress-bar bg-success"
+                          role="progressbar"
+                          [style.width.%]="comp.level"
+                          [attr.aria-valuenow]="comp.level"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                          style="font-size: 12px; color: #fff;"
+                        >
+                          {{ comp.level }}%
+                        </div>
+                      </div>
+
+                      <!-- Description tronquée -->
+                      <div *ngIf="comp.description" 
+                          class="text-muted text-truncate" 
+                          style="max-width: 700px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.9rem;">
+                        {{ comp.description }}
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+
+
+
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary shadow-none border-0 rounded-0" data-bs-dismiss="modal">Fermer</button>
+        <button class="btn btn-success shadow-none border-0 rounded-0">
+          <i class="fa fa-download me-1"></i> Télécharger
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

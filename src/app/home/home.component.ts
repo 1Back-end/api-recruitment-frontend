@@ -46,7 +46,7 @@ export class HomeComponent {
 
   this.http.get<any>(`${CONFIG.apiUrl}/company/activate_company`, { params }).subscribe(
     (response) => {
-      this.company = response.data;
+      this.company = [...this.company, ...response.data]; // Ajoute à la liste existante
       this.currentPage = response.current_page;
       this.totalPages = response.pages; // ✅ Correspond à "pages" dans ta réponse
       this.totalItems = response.total;
@@ -54,7 +54,7 @@ export class HomeComponent {
       // console.log(response.data)
     },
     (error) => {
-      this.toastr.error('Erreur lors du chargement des entreprises');
+      // this.toastr.error('Erreur lors du chargement des entreprises');
       this.isLoading = false;
     }
   );
@@ -66,5 +66,12 @@ export class HomeComponent {
     this.get_activate_company();
   }
 
+  loadMore(): void {
+    if (this.currentPage < this.totalPages) {
+    this.currentPage++;
+    this.get_activate_company();
+  }
 
+
+}
 }

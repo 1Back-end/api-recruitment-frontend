@@ -16,6 +16,7 @@ import { CONFIG } from '../../../../config';
 })
 export class ResetPasswordComponent {
   changePasswordForm: FormGroup;
+  isLoading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -32,41 +33,42 @@ export class ResetPasswordComponent {
   }
   
   onSubmit() {
-    if (this.changePasswordForm.invalid) {
-      this.toastr.error('Veuillez remplir tous les champs correctement');
-      return;
-    }
-  
-    const { new_password, confirm_new_password } = this.changePasswordForm.value;
-  
-    if (new_password !== confirm_new_password) {
-      this.toastr.error('Les mots de passe ne correspondent pas');
-      return;
-    }
-  
-    const email = localStorage.getItem('reset_email');
-    const otp = localStorage.getItem('reset_otp');
-  
-    if (!email || !otp) {
-      this.toastr.error('Session expirée. Veuillez recommencer');
-      return;
-    }
-  
-    const payload = {email,otp,new_password};
-  
-    this.http.post(`${CONFIG.apiUrl}/authentification/reset-password/administrator`, payload).subscribe(
-      (response: any) => {
-        this.toastr.success(response?.message || 'Mot de passe modifié avec succès');
-        localStorage.removeItem('reset_email');
-        localStorage.removeItem('reset_otp');
-        this.router.navigate(['/login']);
-      },
-      (error) => {
-        const message = error?.error?.detail || 'Une erreur est survenue. Essayez encore';
-        this.toastr.error(message);
-      }
-    );
+  if (this.changePasswordForm.invalid) return;
+
+  const { new_password, confirm_new_password } = this.changePasswordForm.value;
+
+  if (new_password !== confirm_new_password) {
+    this.toastr.error('Les mots de passe ne correspondent pas');
+    return;
   }
-  
+
+  const email = localStorage.getItem('reset_email');
+  const otp = localStorage.getItem('reset_otp');
+
+  if (!email || !otp) {
+    this.toastr.error('Session expirée. Veuillez recommencer');
+    return;
+  }
+
+  this.isLoading = true; // Active uniquement après toutes les validations
+
+  const payload = { email, otp, new_password };
+
+  this.http.post(`${CONFIG.apiUrl}/authentification/reset-password/administrator`, payload).subscribe(
+    (response: any) => {
+      this.toastr.success(response?.message || 'Mot de passe modifié avec succès');
+      localStorage.removeItem('reset_email');
+      localStorage.removeItem('reset_otp');
+      this.router.navigate(['/login']);
+      this.isLoading = false;
+    },
+    (error) => {
+      const message = error?.error?.detail || 'Une erreur est survenue. Essayez encore';
+      this.toastr.error(message);
+      this.isLoading = false;
+    }
+  );
+}
+
 
 }

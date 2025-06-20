@@ -19,6 +19,7 @@ export class ForgotPasswordComponent {
 
   LoginForm: FormGroup;
   showPassword: boolean = false;
+  isLoading: boolean = false;
 
   constructor(
     private toastr: ToastrService, private fb: FormBuilder, private http: HttpClient, private router: Router,
@@ -28,26 +29,27 @@ export class ForgotPasswordComponent {
     });
   }
   onSubmit() {
-    if (this.LoginForm.invalid) {
-      this.toastr.error('Tous les champs sont requis');
-      return;
+  if (this.LoginForm.invalid) return;
+
+  const email = this.LoginForm.value.email;
+
+  this.isLoading = true; // Activation uniquement après les vérifications
+
+  this.http.post(`${CONFIG.apiUrl}/authentification/start-reset-password/administrator`, { email }).subscribe(
+    (res: any) => {
+      this.toastr.success(res.message || 'Un code a été envoyé à votre adresse email');
+      localStorage.setItem('reset_email', email);
+      this.router.navigate(['/auth/code-otp']);
+      this.isLoading = false;
+    },
+    (err) => {
+      const msg = err?.error?.detail || "Une erreur est survenue. Vérifiez l'adresse email";
+      this.toastr.error(msg);
+      this.isLoading = false;
     }
-    const email = this.LoginForm.value.email;
-    this.http.post(`${CONFIG.apiUrl}/authentification/start-reset-password/administrator`, { email }).subscribe(
-      (res: any) => {
-        this.toastr.success(res.message || 'Un code a été envoyé à votre adresse email');
-        // Stocker l'email pour l'utiliser à l'étape OTP si besoin
-        localStorage.setItem('reset_email', email);
-        // Redirection vers la page du code OTP
-        this.router.navigate(['/auth/code-otp']);
-      },
-      (err) => {
-        const msg = err?.error?.detail || "Une erreur est survenue. Vérifiez l'adresse email";
-        this.toastr.error(msg);
-      }
-    );
-  }
-  
+  );
+}
+
   
 
 }

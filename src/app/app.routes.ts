@@ -22,43 +22,68 @@ import {OwnersCreateAccountsComponent} from './owners/owners-create-accounts/own
 import {OffersFreelanceComponent} from './offers-freelance/offers-freelance.component';
 import {CompanyComponent} from './main/company/company.component';
 import {OwnersComponent} from './main/owners/owners.component';
+import {LoginUsersComponent} from './main/login-users/login-users.component';
 
-
+import {DiplomasComponent} from './users/diplomas/diplomas.component';
+import {ExperiencesComponent} from './users/experiences/experiences.component';
+import {CompetencesComponent} from './users/competences/competences.component';
+import {LangagesComponent} from './users/langages/langages.component';
+import {HobbiesComponent} from './users/hobbies/hobbies.component';
+import {OthersComponent} from './users/others/others.component';
 
 export const routes: Routes = [
-  { 
-    path: 'login', 
-    component: LoginComponent, 
-    canActivate: [LoginGuard] 
-  },
-  
-  
-  // Route de l'admin (avec sous-routes)
   {
-    path: 'admin', 
-    component: AdminComponent, // Composant principal pour l'admin
-    canActivate: [AuthGuard], // Protège cette route avec un guard d'authentification
+    path: 'login',
+    component: LoginComponent,
+    canActivate: [LoginGuard]
+  },
+
+  // ADMIN ROUTES
+  {
+    path: 'admin',
+    component: AdminComponent, // ou AdminLayoutComponent
+    canActivate: [AuthGuard],
     children: [
-        { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
-        { path: 'users', component: UtilisateursComponent, canActivate: [AuthGuard] },
-        { path: 'users/add', component: AddUtilisateursComponent, canActivate: [AuthGuard] },
-        { path: 'users/edit/:uuid', component: EditUtilisateursComponent, canActivate: [AuthGuard] },
-        { path : 'main/company', component:CompanyComponent,canActivate:[AuthGuard]},
-        { path : 'main/owners', component:OwnersComponent,canActivate:[AuthGuard]},
-        { path: '', redirectTo: '/admin/dashboard', pathMatch: 'full' }
-      ]
-    },
-  // 👇 Home devient la route par défaut
+      { path: 'dashboard', component: DashboardComponent,canActivate: [LoginGuard] },
+      { path: 'users', component: UtilisateursComponent,canActivate: [LoginGuard] },
+      { path: 'users/add', component: AddUtilisateursComponent,canActivate: [LoginGuard] },
+      { path: 'users/edit/:uuid', component: EditUtilisateursComponent,canActivate: [LoginGuard] },
+      { path: 'main/company', component: CompanyComponent,canActivate: [LoginGuard] },
+      { path: 'main/owners', component: OwnersComponent,canActivate: [LoginGuard] },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+    ]
+  },
+
+  // USER ROUTES
+  {
+    path: 'users',
+    component: AdminComponent, // 👈 même layout que l'admin
+    canActivate: [AuthGuard],
+    children: [
+      { path: 'dashboard', component: DashboardComponent,canActivate: [LoginGuard] },
+      { path: 'users/diplomas', component: DiplomasComponent,canActivate: [LoginGuard] },
+      { path : 'users/experiences', component:ExperiencesComponent,canActivate:[LoginGuard]},
+      { path: 'users/competences', component: CompetencesComponent,canActivate: [LoginGuard] },
+      { path: 'users/languages', component:LangagesComponent, canActivate: [LoginGuard]},
+      { path: 'users/hobbies', component:HobbiesComponent, canActivate: [LoginGuard]},
+      { path: 'users/others', component:OthersComponent, canActivate: [LoginGuard]},
+
+      // Ajoute d'autres routes spécifiques aux users ici
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+    ]
+  },
+
+  // AUTRES ROUTES PUBLIQUES
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
   { path: 'create-account', component: CreateAccountComponent },
   { path: 'job-offers', component: JobOffersComponent },
   { path: 'companies', component: CompaniesComponent },
   { path: 'candidates', component: CandidatesComponent },
-  { path:'offers_freelance',component:OffersFreelanceComponent},
+  { path: 'offers_freelance', component: OffersFreelanceComponent },
   { path: 'candidates/create-account', component: CandidatesCreateAccountsComponent },
   { path: 'owners/create-account', component: OwnersCreateAccountsComponent },
-
+  { path: 'main/login-users', component: LoginUsersComponent },
   { path: 'auth/change-password', component: ChangePasswordComponent, canActivate: [AuthGuard] },
   { path: 'auth/forgot-password', component: ForgotPasswordComponent },
   { path: 'auth/code-otp', component: CodeOtpComponent },

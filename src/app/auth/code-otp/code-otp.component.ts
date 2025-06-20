@@ -17,6 +17,7 @@ import { Router } from '@angular/router';
 })
 export class CodeOtpComponent {
   LoginForm: FormGroup;
+  isLoading: boolean = false;
   
   constructor(
     private toastr: ToastrService, private fb: FormBuilder, private http: HttpClient, private router: Router,
@@ -27,10 +28,9 @@ export class CodeOtpComponent {
     
   }
   onSubmit() {
-    if (this.LoginForm.invalid) {
-      this.toastr.error('Tous les champs sont requis');
-      return;
-    }
+    if (this.LoginForm.invalid || this.isLoading) return;
+
+    this.isLoading = true;
   
     const otp = this.LoginForm.value.otp;
     const email = localStorage.getItem('reset_email'); // récupérer l'email
@@ -50,10 +50,12 @@ export class CodeOtpComponent {
         localStorage.setItem('reset_otp', otp);  
         // Redirection vers la page de reset du mot de passe
         this.router.navigate(['/auth/reset-password']);
+        this.isLoading = false;
       },
       (err) => {
         const msg = err?.error?.detail || "Code incorrect ou expiré";
         this.toastr.error(msg);
+        this.isLoading = false;
       }
     );
   }
