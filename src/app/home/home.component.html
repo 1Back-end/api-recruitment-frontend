@@ -1,74 +1,63 @@
 <app-navbar></app-navbar>
 
-<br><br><br><br><br>
-<div class="container-fluid py-5 position-relative overflow-hidden vh-75">
-  <!-- Image de fond -->
-  <img src="assets/images/img_home.png"
-       alt="Image de fond"
-       class="bg-image-animated" />
+<div class="home-hero position-relative text-white">
+  <img src="assets/images/img_home.png" alt="Image de fond" class="hero-bg" />
+  <div class="hero-overlay"></div>
 
-  <!-- Contenu visible (les deux blocs) -->
-  <div class="position-relative" style="z-index: 2;">
-    <!-- Bloc avec les boutons -->
-    <div class="container p-3 bg-light mb-5 rounded-3">
-      <div class="row justify-content-center gap-3 gap-md-0">
-        <div class="col-auto">
-          <a routerLink="/candidates/create-account" class="btn btn-primary py-3 px-4 rounded-5 text-white fw-bold">
-            <i class="fa-solid fa-cloud-arrow-up me-1"></i>
-            Candidat : Déposez votre CV
-          </a>
-        </div>
-        <div class="col-auto">
-          <a routerLink="/owners/create-account" class="btn btn-primary py-3 px-4 rounded-5 text-white fw-bold">
-            <i class="fas fa-bullhorn me-2"></i>
-            Recruteur : Publiez une offre d'emploi
-          </a>
-        </div>
+  <div class="container text-center position-relative z-2 py-5">
+    <div class="row justify-content-center mb-4">
+      <div class="col-auto">
+        <a routerLink="/candidates/create-account" class="btn btn-lg btn-gradient rounded-pill fw-semibold me-2">
+          <i class="fa-solid fa-cloud-arrow-up me-2"></i>
+          Candidat : Déposez votre CV
+        </a>
+      </div>
+      <div class="col-auto">
+        <a routerLink="/owners/create-account" class="btn btn-lg btn-gradient-alt rounded-pill fw-semibold">
+          <i class="fas fa-bullhorn me-2"></i>
+          Recruteur : Publiez une offre d'emploi
+        </a>
       </div>
     </div>
 
-    <!-- Bloc du formulaire de recherche -->
-    <div class="container">
-      <div class="bg-white p-4 shadow border-0 rounded-3">
-        <form>
-          <div class="row justify-content-center align-items-end g-3">
-            <div class="col-md-3">
-              <label for="motcle" class="form-label fw-bold">Mot clé</label>
-              <input type="text" id="motcle" class="form-control" placeholder="Ex: développeur, comptable...">
-            </div>
-            <div class="col-md-3">
-              <label for="region" class="form-label fw-bold">Région</label>
-              <select id="region" class="form-select cursor-pointer">
-                <option selected disabled>Choisir une région</option>
-                <option>Centre</option>
-                <option>Littoral</option>
-                <option>Ouest</option>
-                <option>Nord</option>
-              </select>
-            </div>
-            <div class="col-md-3">
-              <label for="metier" class="form-label fw-bold">Métier</label>
-              <input type="text" id="metier" class="form-control" placeholder="Ex: ingénieur, enseignant...">
-            </div>
-            <div class="col-md-2 d-grid">
-              <button type="submit" class="btn btn-success mt-2">Valider</button>
-            </div>
+    <div class="bg-white shadow p-4 rounded-4 mx-auto" style="max-width: 1000px;">
+      <form>
+        <div class="row g-3 align-items-end">
+          <div class="col-md-4">
+            <label for="motcle" class="form-label fw-semibold">Mot clé</label>
+            <input type="text" id="motcle" class="form-control" placeholder="Développeur, comptable...">
           </div>
-        </form>
-      </div>
+          <div class="col-md-4">
+            <label for="region" class="form-label fw-semibold">Région</label>
+            <select id="region" class="form-select">
+              <option disabled selected>Choisir une région</option>
+              <option>Centre</option>
+              <option>Littoral</option>
+              <option>Ouest</option>
+              <option>Nord</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label for="metier" class="form-label fw-semibold">Métier</label>
+            <input type="text" id="metier" class="form-control" placeholder="Ingénieur, enseignant...">
+          </div>
+          <div class="col-md-1 d-grid">
+            <button type="submit" class="btn btn-success">OK</button>
+          </div>
+        </div>
+      </form>
     </div>
   </div>
 </div>
+
 <div class="container py-5">
-  <h2 class="text-center fw-bold mb-4 title">Les entreprises qui recrutent</h2>
-  <p class="text-center text-muted mb-4">
-    Découvrez les entreprises qui recrutent actuellement et explorez leurs offres d'emploi.
-  </p>
+  <h2 class="text-center fw-bold mb-3 title">Entreprises qui recrutent</h2>
+  <p class="text-center text-muted mb-4">Découvrez celles qui proposent des opportunités près de chez vous.</p>
 
   <!-- Chargement -->
   <div class="text-center my-5" *ngIf="isLoading">
     <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Loading...</span>
+      <span class="visually-hidden">Chargement...</span>
     </div>
     <p class="mt-2">Chargement...</p>
   </div>
@@ -81,47 +70,33 @@
 
   <!-- Liste des entreprises -->
   <div class="row mt-3 justify-content-center" *ngIf="company.length > 0">
-    <div class="col-lg-6 col-sm-12 mb-4" *ngFor="let c of company">
-      <div class="card border-0 shadow-lg p-3 h-100 px-lg-5 py-lg-5">
+    <div class="col-lg-6 col-md-8 mb-4" *ngFor="let c of company">
+      <div class="card company-card shadow-sm border-0 p-4 h-100 hover-zoom">
         <div class="d-flex justify-content-between align-items-center">
-          <!-- Infos texte -->
           <div class="flex-grow-1">
-            <h5 class="fw-bold text-uppercase title fs-6 mb-1">{{ c.name }}</h5>
+            <h5 class="fw-bold text-uppercase mb-1">{{ c.name }}</h5>
             <p class="text-primary mb-1" *ngIf="c.slogan">{{ c.slogan }}</p>
-            
-
             <p class="text-muted small mb-0">
               <i class="fa-solid fa-location-dot me-1 text-secondary"></i>
               {{ c.address?.city }}, {{ c.address?.country }}
             </p>
           </div>
-
-          <!-- Logo -->
-          <div style="flex-shrink: 0;">
-            <img [src]="c.logo?.url || 'assets/images/logo_company.png'" 
-                alt="Logo {{ c.name }}" 
-                class="rounded-circle" 
-                style="width: 80px; height: 80px; object-fit: cover;">
+          <div>
+            <img [src]="c.logo?.url || 'assets/images/logo_company.png'" alt="Logo {{ c.name }}" class="rounded-circle shadow" style="width: 70px; height: 70px; object-fit: cover;">
           </div>
         </div>
       </div>
     </div>
   </div>
 
-   <!-- Pagination -->
-    <div class="text-center mt-4" *ngIf="totalPages > 1">
-      <div class="text-center mt-4" *ngIf="currentPage < totalPages">
-        <button class="btn btn-primary py-3 px-4 rounded-5 text-white fw-bold" (click)="loadMore()">Voir plus de d'entreprises</button>
-      </div>
-    </div>
+  <!-- Pagination -->
+  <div class="text-center mt-4" *ngIf="totalPages > 1 && currentPage < totalPages">
+    <button class="btn btn-outline-primary rounded-pill px-5 py-2 fw-bold" (click)="loadMore()">Voir plus d'entreprises</button>
+  </div>
 </div>
 
-<div class="container-fluid py-5">
-  
-<app-newsletters></app-newsletters>
-
-
+<div class="bg-light py-5">
+  <app-newsletters></app-newsletters>
 </div>
-
 
 <app-footer></app-footer>

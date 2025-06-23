@@ -54,7 +54,6 @@ export class CompanyComponent {
     let params = new HttpParams()
       .set('page', this.currentPage.toString())
       .set('per_page', this.titlesPerPage.toString());
-
     if (status) {
       params = params.set('status', status);
     }

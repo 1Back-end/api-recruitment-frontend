@@ -1,0 +1,83 @@
+.home-hero {
+  height: 90vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to bottom right, #0077ff, #00c6ff);
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  opacity: 0.3;
+  filter: brightness(0.7);
+}
+
+.hero-overlay {
+  position: absolute;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7));
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.btn-gradient {
+  background: linear-gradient(135deg, #ff416c, #ff4b2b);
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 65, 108, 0.5);
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-gradient:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #ff2e63, #ff5e3a);
+}
+
+.btn-gradient-alt {
+  background: linear-gradient(135deg, #00c9ff, #92fe9d);
+  color: #000;
+  box-shadow: 0 4px 15px rgba(0, 201, 255, 0.4);
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-gradient-alt:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #00b8e6, #6effb7);
+}
+
+.company-card {
+  background: #ffffff;
+  border-radius: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.company-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.hover-zoom img {
+  transition: transform 0.3s ease;
+}
+
+.hover-zoom:hover img {
+  transform: scale(1.1);
+}
+
+.title {
+  color: #2c3e50;
+  font-size: 2.2rem;
+}
+
+.bg-light {
+  background: linear-gradient(to right, #f8f9fa, #e9ecef);
+}
