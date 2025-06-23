@@ -39,7 +39,15 @@ export class JobOffersComponent {
   serviceToDelete: any;
   selectedCandidate: any = null;
   isLoadingCV: boolean = false;
-   isAuthenticated = false;
+  isAuthenticated = false;
+  selectedOffer: any = null;
+
+  ApplicationForm!: FormGroup;
+  selectedOfferUuid: string = '';
+  cvUuid: string | null = null;
+  coverLetterUuid: string | null = null;
+  cvError = '';
+  coverLetterError = '';
 
   constructor(
     private http: HttpClient,
@@ -49,6 +57,12 @@ export class JobOffersComponent {
     public authService: AuthService, // public au lieu de private
     @Inject(PLATFORM_ID) private platformId: Object,
   ) {
+
+    this.ApplicationForm = this.fb.group({
+    job_offer_uuid: ['',Validators.required],
+    cv_uuid: ['', Validators.required],
+    cover_letter_uuid: ['', Validators.required]
+  });
     
   }
   formatPhoneNumberIntl(phone: string): string {
@@ -66,20 +80,24 @@ formatE164(phone: string): string {
   }
 
 
-  get_all_job_offers(): void {
+  get_all_job_offers(keyword?: string): void {
     this.isLoading = true;
 
     let params = new HttpParams()
       .set('page', this.currentPage.toString())
       .set('per_page', this.titlesPerPage.toString());
+
+      if (keyword && keyword.trim() !== '') {
+        params = params.set('keyword', keyword.trim());
+      }
     this.http.get<any>(`${CONFIG.apiUrl}/offers/get_many`, { params }).subscribe(
       (response) => {
-        this.data = [...this.data, ...response.data]; // Ajoute les nouveaux résultats
+        this.data = this.currentPage === 1 ? response.data : [...this.data, ...response.data];
         this.currentPage = response.current_page;
         this.totalPages = response.pages;
         this.totalItems = response.total;
         this.isLoading = false;
-        console.log(this.data);
+        // console.log(this.data);
       },
       (error:any) => {
         this.toastr.error('Erreur lors du chargement des données');
@@ -87,6 +105,13 @@ formatE164(phone: string): string {
       }
     );
   }
+
+   onSearchChange(): void {
+    this.currentPage = 1;
+    this.get_all_job_offers(this.searchQuery);
+  }
+  
+
 
   goToPage(page: number): void {
     if (page < 1 || page > this.totalPages) return;
@@ -101,11 +126,70 @@ formatE164(phone: string): string {
   }
 }
 
-applyToOffer(offerUuid: string): void {
-  // logique pour postuler, ex: redirection ou appel API
-  this.toastr.success("Postuler à l'offre :", offerUuid);
-  // ...
+openApplicationModal(offer: any): void {
+  this.selectedOfferUuid = offer.uuid;
+  this.ApplicationForm.patchValue({ job_offer_uuid: offer.uuid });
 }
+
+onFileSelected(event: any, type: 'cv' | 'coverLetter') {
+  const file: File = event.target.files[0];
+  if (!file) return;
+
+  // Optional: validation sur le type/fichier
+  if (!['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.type)) {
+    if (type === 'cv') this.cvError = 'Format de fichier invalide (PDF, DOC, DOCX seulement)';
+    else this.coverLetterError = 'Format de fichier invalide (PDF, DOC, DOCX seulement)';
+    return;
+  } else {
+    if (type === 'cv') this.cvError = '';
+    else this.coverLetterError = '';
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  this.isLoading = true;
+
+  this.http.post<any>(`${CONFIG.apiUrl}/storages/upload`, formData).subscribe({
+    next: (res) => {
+      this.isLoading = false;
+      if (type === 'cv') this.cvUuid = res.uuid;
+      else this.coverLetterUuid = res.uuid;
+    },
+    error: () => {
+      this.isLoading = false;
+      if (type === 'cv') this.cvError = "Erreur lors de l'upload du CV";
+      else this.coverLetterError = "Erreur lors de l'upload de la lettre";
+    }
+  });
+}
+
+submitApplication(): void {
+  if (!this.cvUuid || !this.coverLetterUuid || this.isLoading) return;
+
+  this.isLoading = true;
+
+  const payload = {
+    job_offer_uuid: this.selectedOfferUuid,
+    cv_uuid: this.cvUuid,
+    cover_letter_uuid: this.coverLetterUuid
+  };
+
+  this.http.post(`${CONFIG.apiUrl}/applications/create`, payload).subscribe({
+    next: (res:any) => {
+      this.toastr.success(res.message || 'Candidature envoyée avec succès');
+      this.isLoading = false;
+      this.cvUuid = null;
+      this.coverLetterUuid = null;
+      this.ApplicationForm.reset();
+    },
+    error: (err) => {
+      this.toastr.error(err.error.detail || "Erreur lors de l'envoi");
+      this.isLoading = false;
+    }
+  });
+}
+
 
 showAuthAlert(): void {
   this.toastr.error("Vous devez être connecté en tant que candidat pour postuler à cette offre d'emploi.");

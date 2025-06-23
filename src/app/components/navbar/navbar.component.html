@@ -47,7 +47,7 @@
                   <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg border-0 rounded-0">
                     <li>
                       <a class="dropdown-item text-success"
-                        [routerLink]="role.getUserRole() === 'OWNER' ? '/auth/dashboard' : (role.getUserRole() === 'CANDIDATE' ? '/users/users/diplomas' : '/')">
+                        [routerLink]="role.getUserRole() === 'OWNER' ? '/owners/owners/my_job_offers' : (role.getUserRole() === 'CANDIDATE' ? '/users/users/diplomas' : '/')">
                         <i class="fa-solid fa-circle-user me-2"></i> Gérer mon compte
                       </a>
                     </li>

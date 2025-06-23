@@ -1,0 +1,363 @@
+<div class="col-lg-12 col-sm-12 mb-3">
+    <div class="d-flex align-items-center justify-content-between">
+        <div class="mb-0">
+            <h4 class="text-uppercase fw-bold title fs-3">liste de mes offres d'emplois</h4>
+        </div>
+        <div class="ml-auto">
+            <button class="mb-2 px-2 py-2 shadow-none btn btn-primary rounded-0 text-white mx-2" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                <i class="bi bi-plus"></i> Ajouter une offre d'emploi
+            </button>
+            <a (click)="get_all_my_job_offers()" class="mb-2 px-2 py-2 shadow-none btn btn-primary rounded-0 text-white mx-2">
+                <i class="bi bi-arrow-clockwise"></i> Actualiser
+            </a>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="col-lg-12 col-sm-12 mb-3">
+    <div class="card p-3 shadow-lg border-0 rounded-3">
+        <div class="table-responsive-md">
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Code</th>
+                        <th scope="col">L'offre</th>
+                        <th scope="col">Salaire</th>
+                        <th scope="col">T° de contrat</th>
+                       <th scope="col">Email contact</th>
+                       <th scope="col">Etat</th>
+                       <th scope="col">Publié le</th>
+                       <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngIf="isLoading || data.length === 0">
+                        <td colspan="12">
+                        <div *ngIf="isLoading" class="d-flex justify-content-center align-items-center gap-2">
+                            <div class="spinner-border spinner-border-sm text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <span>Chargement...</span>
+                        </div>
+                        <span *ngIf="!isLoading">Aucune donnée disponible</span>
+                        </td>
+                    </tr>
+                    <ng-container *ngIf="!isLoading && data.length > 0">
+                    <tr *ngFor="let job_offers of data; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ job_offers.uuid.slice(-8).toUpperCase() }}</td>
+                        <td>{{ job_offers.title }}</td>
+                        <td>{{ job_offers.full_salary }}</td>
+                       
+                        <td>
+                            <span *ngIf="job_offers.employment_type === 'CDI'" class="badge disabled badge-success border-0 rounded-0">
+                                Contrat à durée indéterminée
+                            </span>
+                            <span *ngIf="job_offers.employment_type === 'CDD'" class="badge disabled badge-primary border-0 rounded-0">
+                                Contrat à durée déterminée
+                            </span>
+
+                            <span *ngIf="job_offers.employment_type === 'Freelance'" class="badge disabled badge-info border-0 rounded-0">
+                                Freelance
+                            </span>
+
+                            <span *ngIf="job_offers.employment_type === 'Internship'" class="badge disabled badge-danger border-0 rounded-0">
+                                Stage
+                            </span>
+                        </td>
+                        <td>{{ job_offers.contact_email }}</td>
+                        <td>
+                            <span *ngIf="job_offers.status === 'active'" class="badge disabled badge-success border-0 rounded-0">
+                                Active
+                            </span>
+                            <span *ngIf="job_offers.status === 'expired'" class="badge disabled badge-danger border-0 rounded-0">
+                                Expirée
+                            </span>
+                            <span *ngIf="job_offers.status === 'closed'" class="badge disabled badge-danger border-0 rounded-0">
+                                Cloturée
+                            </span>
+                        </td>
+
+                        <td>{{ job_offers.created_at | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+
+                        <td>
+                             <div class="d-flex align-items-center justify-content-center">
+                                <button data-bs-toggle="modal" data-bs-toggle="modal" data-bs-target="#JobInfo"
+                                    (click)="openJobDetails(job_offers)"
+                                    class="btn btn-info btn-sm btn-xs border-0 rounded-0 px-2 mx-2 py-2 shadow-none text-white">
+                                    <i class="fa-solid fa-circle-info me-1"></i>Détails
+                                </button>
+
+                                <button data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                                    (click)="onEdit(job_offers)"
+                                    class="btn btn-warning btn-sm btn-xs border-0 rounded-0 px-2 py-2 shadow-none text-white">
+                                    <i class="fa-solid fa-pen-to-square me-1"></i>Modifier
+                                </button>
+
+                                <button data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                                    (click)="onEdit(job_offers)"
+                                    class="btn btn-danger btn-sm btn-xs border-0 rounded-0 px-2 mx-2 py-2 shadow-none text-white">
+                                    <i class="fa-solid fa-trash me-1"></i>Supprimer
+                                </button>
+                             </div>
+                        </td>
+                    </tr>
+                    </ng-container>
+                </tbody>
+
+
+            </table>
+        </div>
+         <!-- Pagination -->
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <label for="itemsPerPage" class="me-2">Afficher:</label>
+                <select class="form-select cursor-pointer" id="itemsPerPage" [(ngModel)]="titlesPerPage" (change)="get_all_my_job_offers()">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    
+                </select>
+            </div>
+            <div class="pagination-info d-flex align-items-center">
+           
+                <!-- Navigation buttons: Précédent / Suivant -->
+                <ul class="pagination mb-0">
+                    <li class="page-item" [class.disabled]="currentPage === 1">
+                        <a class="page-link" href="javascript:void(0)" (click)="goToPage(currentPage - 1)">‹ Précédent</a>
+                    </li>
+                    <li class="page-item" [class.disabled]="currentPage === totalPages">
+                        <a class="page-link" href="javascript:void(0)" (click)="goToPage(currentPage + 1)">Suivant ›</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="pagination-info">
+                <span>{{ currentPage }} sur {{ totalPages }} ({{ totalItems }} total)</span>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="JobInfo" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="JobInfo" aria-hidden="true">>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="alert alert-warning border-0 rounded-0 text-uppercase" role="alert">
+             Modifier le statut de l'offre d'emploi : <strong>Active</strong>, <strong>Expirée</strong> ou <strong>Clôturée</strong>.
+        </div>
+
+      </div>
+      <div class="modal-body">
+
+        <div class="form-floating mt-3">
+              <select class="form-select cursor-pointer"
+                      id="floatingSelect"
+                      [(ngModel)]="selectedStatus">
+                <option value="" disabled selected>Choisir une option</option>
+                <option value="active">Activé</option>
+                <option value="expired">Expirée</option>
+                <option value="closed">Clôturée</option>
+              </select>
+              <label for="floatingSelect">Changer le statut <span class="text-danger">*</span></label>
+            </div>
+          </div>
+          
+      <div class="modal-footer">
+        <button type="button" [disabled]="isLoading"
+                class="btn btn-secondary px-2 py-2 rounded-0 border-0"
+                data-bs-dismiss="modal">
+          <i class="fa-solid fa-circle-xmark me-1"></i> Annuler
+        </button>
+
+        <button class="px-2 py-2 btn btn-primary rounded-0 text-white border-0"
+                data-bs-dismiss="modal"
+                [disabled]="!selectedStatus || isLoading"
+                (click)="changeStatus(selectedJob?.uuid)">
+          <ng-container *ngIf="!isLoading; else loading">
+            <i class="fa-solid fa-rotate"></i> Changer le statut
+          </ng-container>
+          <ng-template #loading>
+            <i class="spinner-border spinner-border-sm me-1"></i> Traitement...
+          </ng-template>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+  tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      
+      <div class="modal-header px-3">
+        <div class="alert alert-info text-center border-0 w-100 text-uppercase mb-0 fw-bold" role="alert">
+          {{ isEditMode ? "Modifier l'offre d'emploi" : "Publier une offre d'emploi" }}
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="ServiceForm" (ngSubmit)="SaveJobOffers()">
+
+          <div class="row">
+
+            <!-- Titre -->
+            <div class="col-md-6 mb-3">
+              <div class="form-floating">
+                <input type="text" formControlName="title" class="form-control"
+                  [ngClass]="{ 'is-invalid': ServiceForm.get('title')?.invalid && ServiceForm.get('title')?.touched }"
+                  id="titleInput" placeholder="Titre">
+                <label for="titleInput">Titre <span class="text-danger">*</span></label>
+                <div class="invalid-feedback">Champ requis.</div>
+              </div>
+            </div>
+
+            <!-- Devise -->
+            <div class="col-md-6 mb-3">
+              <div class="form-floating">
+                <select formControlName="currency" class="form-select"
+                  [ngClass]="{ 'is-invalid': ServiceForm.get('currency')?.invalid && ServiceForm.get('currency')?.touched }"
+                  id="currencyInput">
+                  <option value="">---------</option>
+                  <option value="XAF">XAF</option>
+                  <option value="USD">USD</option>
+                  <option value="EUR">EUR</option>
+                </select>
+                <label for="currencyInput">Devise <span class="text-danger">*</span></label>
+                <div class="invalid-feedback">Champ requis.</div>
+              </div>
+            </div>
+
+            <!-- Salaire -->
+            <div class="col-md-6 mb-3">
+              <div class="form-floating">
+                <input type="number" formControlName="salary" class="form-control"
+                  [ngClass]="{ 'is-invalid': ServiceForm.get('salary')?.invalid && ServiceForm.get('salary')?.touched }"
+                  id="salaryInput" placeholder="Salaire">
+                <label for="salaryInput">Salaire <span class="text-danger">*</span></label>
+                <div class="invalid-feedback">Salaire requis et doit être ≥ 0.</div>
+              </div>
+            </div>
+
+            <!-- Type de contrat -->
+            <div class="col-md-6 mb-3">
+              <div class="form-floating">
+                <select formControlName="employment_type" class="form-select"
+                  [ngClass]="{ 'is-invalid': ServiceForm.get('employment_type')?.invalid && ServiceForm.get('employment_type')?.touched }"
+                  id="employmentInput">
+                  <option value="">----------</option>
+                  <option value="CDI">CDI</option>
+                  <option value="CDD">CDD</option>
+                  <option value="Freelance">Freelance</option>
+                  <option value="Internship">Stage</option>
+                </select>
+                <label for="employmentInput">Type de contrat <span class="text-danger">*</span></label>
+                <div class="invalid-feedback">Champ requis.</div>
+              </div>
+            </div>
+
+            <!-- Date d'expiration -->
+            <div class="col-md-6 mb-3">
+              <div class="form-floating">
+                <input type="date" formControlName="expiration_date" class="form-control"
+                  [ngClass]="{ 'is-invalid': ServiceForm.get('expiration_date')?.invalid && ServiceForm.get('expiration_date')?.touched }"
+                  id="expirationDateInput">
+                <label for="expirationDateInput">Date d'expiration <span class="text-danger">*</span></label>
+                <div class="invalid-feedback">Champ requis.</div>
+              </div>
+            </div>
+
+            <!-- Mode de travail -->
+            <div class="col-md-6 mb-3">
+              <div class="form-floating">
+                <select formControlName="work_mode" class="form-select"
+                  [ngClass]="{ 'is-invalid': ServiceForm.get('work_mode')?.invalid && ServiceForm.get('work_mode')?.touched }"
+                  id="workModeInput">
+                  <option value="">--------</option>
+                  <option value="Full-Time">Temps plein</option>
+                  <option value="Part-Time">Temps partiel</option>
+                  <option value="Remote">Télétravail</option>
+                  <option value="Hybrid">Hybride</option>
+                </select>
+                <label for="workModeInput">Mode de travail <span class="text-danger">*</span></label>
+                <div class="invalid-feedback">Champ requis.</div>
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-6 mb-3">
+              <div class="form-floating">
+                <input type="email" formControlName="contact_email" class="form-control"
+                  [ngClass]="{ 'is-invalid': ServiceForm.get('contact_email')?.invalid && ServiceForm.get('contact_email')?.touched }"
+                  id="emailInput" placeholder="Email">
+                <label for="emailInput">Email de contact <span class="text-danger">*</span></label>
+                <div class="invalid-feedback">Email invalide ou requis.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="form-floating mb-3">
+            <textarea formControlName="description" class="form-control"
+              [ngClass]="{ 'is-invalid': ServiceForm.get('description')?.invalid && ServiceForm.get('description')?.touched }"
+              id="descriptionInput" style="height: 120px;" placeholder="Description"></textarea>
+            <label for="descriptionInput">Description <span class="text-danger">*</span></label>
+            <div class="invalid-feedback">Champ requis.</div>
+          </div>
+
+          <!-- Exigences -->
+          <div class="form-floating mb-3">
+            <textarea formControlName="requirements" class="form-control"
+              [ngClass]="{ 'is-invalid': ServiceForm.get('requirements')?.invalid && ServiceForm.get('requirements')?.touched }"
+              id="reqInput" style="height: 100px;" placeholder="Exigences"></textarea>
+            <label for="reqInput">Exigences <span class="text-danger">*</span></label>
+            <div class="invalid-feedback">Champ requis.</div>
+          </div>
+
+          <!-- Footer -->
+          <div class="modal-footer">
+            <button type="button" class="px-2 py-2 shadow-none btn btn-secondary border-0 rounded-0"
+              [disabled]="isLoading" data-bs-dismiss="modal">
+              Annuler
+            </button>
+
+            <button type="submit"
+              data-bs-dismiss="modal"
+              class="px-2 py-2 shadow-none btn btn-primary rounded-0 text-white mx-2"
+              [disabled]="ServiceForm.invalid || isLoading">
+              <span *ngIf="!isLoading">{{ isEditMode ? "Modifier l'offre" : "Publier l'offre" }}</span>
+              <span *ngIf="isLoading">
+                <i class="spinner-border spinner-border-sm"></i> Traitement...
+              </span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>

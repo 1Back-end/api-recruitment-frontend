@@ -8,7 +8,8 @@
     <h3 class="title fw-bold mb-4">
       Rechercher un emploi
     </h3>
-    <input type="search" 
+    <input type="text"
+            [(ngModel)]="searchQuery" (input)="onSearchChange()"
            class="form-control py-3 rounded-pill mx-auto" 
            placeholder="Tapez un mot-clé, poste, entreprise..." 
            style="max-width: 500px;">
@@ -39,40 +40,44 @@
               {{ offer.description.length > 200 ? (offer.description | slice:0:200) + '...' : offer.description }}
             </p>
 
-            <!-- Infos supplémentaires en badges -->
-            <div class="row text-center mb-3">
-              <div class="col-4">
-                <span class="badge bg-primary w-100">{{ offer.full_salary }}</span>
+           <div class="row">
+              <div class="col-lg-6 col-sm-12">
+                <p><i class="fas fa-file-contract me-2"></i>Type de contrat : {{ offer.employment_type }}</p>
               </div>
-              <div class="col-4">
-                <span class="badge bg-success w-100">{{ offer.employment_type }}</span>
+              <div class="col-lg-6 col-sm-12">
+                <p><i class="fas fa-briefcase me-2"></i>Mode de travail : {{ offer.work_mode }}</p>
               </div>
-              <div class="col-4">
-                <span class="badge bg-info text-dark w-100">{{ offer.work_mode }}</span>
+              <div class="col-lg-6 col-sm-12">
+                <p><i class="fas fa-envelope me-2"></i>Contact : {{ offer.contact_email }}</p>
+              </div>
+              <div class="col-lg-6 col-sm-12">
+                <p><i class="fas fa-money-bill-wave me-2"></i>Salaire : {{ offer.full_salary }}</p>
               </div>
             </div>
 
-            <!-- Boutons Voir plus & Postuler -->
+
+         
             <div class="d-flex justify-content-between align-items-center mt-auto">
             <!-- Bouton Voir plus -->
-            <button class="btn btn-outline-secondary px-3 py-2 rounded-5 fw-semibold">
+            <button 
+                data-bs-toggle="modal" 
+                data-bs-target="#staticBackdrop" 
+                class="btn btn-outline-secondary px-3 py-2 rounded-5"
+                (click)="selectedOffer = offer">
                 Voir plus
             </button>
 
             <!-- Bouton Postuler -->
             <button 
-                class="btn"
-                [ngClass]="{
-                'btn-primary py-2 px-4 rounded-5 text-white fw-bold': authService.isAuthenticated() && role.getUserRole() === 'CANDIDATE',
-                'btn-danger py-2 px-4 rounded-5 text-white fw-bold': !authService.isAuthenticated() || role.getUserRole() !== 'CANDIDATE'
-                }"
-                (click)="
-                authService.isAuthenticated() && role.getUserRole() === 'CANDIDATE' 
-                    ? applyToOffer(offer.uuid) 
-                    : showAuthAlert()
-                "
+              class="btn"
+              [ngClass]="{
+                'btn-outline-primary py-2 px-3 rounded-pill': authService.isAuthenticated() && role.getUserRole() === 'CANDIDATE',
+                'btn-outline-danger py-2 px-3 rounded-pill': !authService.isAuthenticated() || role.getUserRole() !== 'CANDIDATE'
+              }"
+              (click)="openApplicationModal(offer)"
+              data-bs-toggle="modal" data-bs-target="#ApplicationOffers"
             >
-                Postuler
+              Postuler
             </button>
             </div>
 
@@ -89,3 +94,108 @@
     </div>
   </div>
 </div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="ApplicationOffers" tabindex="-1" aria-labelledby="ApplicationOffers" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header px-3">
+        <div class="alert alert-success w-100 text-center border-0 rounded-0 text-uppercase" role="alert">
+        Soumettre votre candidature !!!!!!
+      </div>
+      </div>
+      
+      <div class="modal-body">
+        <form [formGroup]="ApplicationForm" (ngSubmit)="submitApplication()">
+
+          <input type="text" style="display: none;" class="form-control" formControlName="job_offer_uuid">
+
+          <div class="form-floating mb-5">
+            <input type="file" (change)="onFileSelected($event, 'cv')" [disabled]="isLoading" [ngClass]="{ 'is-invalid': ApplicationForm.get('cv_uuid')?.invalid && ApplicationForm.get('cv_uuid')?.touched }" formControlName="cv_uuid" class="form-control" id="floatingInput" placeholder="name@example.com">
+            <label for="floatingInput">Sélectionner un CV <span class="text-danger">*</span></label>
+             <div *ngIf="cvError" class="text-danger small">{{ cvError }}</div>
+          </div>
+
+          <div class="form-floating mb-5">
+            <input type="file" (change)="onFileSelected($event, 'coverLetter')" [disabled]="isLoading" [ngClass]="{ 'is-invalid': ApplicationForm.get('cover_letter_uuid')?.invalid && ApplicationForm.get('cover_letter_uuid')?.touched }" formControlName="cover_letter_uuid" class="form-control" id="floatingInput" placeholder="name@example.com">
+            <label for="floatingInput">Lettre de motivation <span class="text-danger">*</span></label>
+            <div *ngIf="coverLetterError" class="text-danger small">{{ coverLetterError }}</div>
+          </div>
+
+                  <!-- Footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary px-2 py-2 shadow-none rounded-0  mx-2" data-bs-dismiss="modal" [disabled]="isLoading">Annuler</button>
+          <button type="submit" data-bs-dismiss="modal" class="px-2 py-2 shadow-none btn btn-primary rounded-0 text-white mx-2" [disabled]="!cvUuid || !coverLetterUuid || isLoading">
+            <span *ngIf="!isLoading">Soumettre</span>
+            <span *ngIf="isLoading">
+              <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              Traitement...
+            </span>
+          </button>
+        </div>
+
+
+        </form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-uppercase" id="staticBackdropLabel">Détails de l'offre : {{ selectedOffer?.title }}</h5>
+        <button type="button" class="btn-close border-0 rounded-0 shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Introduction -->
+        <p class="text-justify">
+          L'entreprise <strong>{{ selectedOffer?.owner?.company?.[0]?.name || 'Non renseignée' }}</strong> pour ses services recherche 
+          un <strong>{{ selectedOffer?.title }}</strong>
+        </p>
+
+        <div class="col-md-12 mb-3 text-justify">
+          <strong>Description:</strong>  {{ selectedOffer?.description }}
+        </div>
+
+        <div class="col-md-12 mb-3 text-justify">
+          <strong>Compétences requises:</strong>  {{ selectedOffer?.requirements }}
+        </div>
+
+
+          <div class="col-md-12 mb-3">
+            <strong>Type de contrat :</strong> {{ selectedOffer?.employment_type }}
+          </div>
+          <div class="col-md-12 mb-3">
+            <strong>Mode de travail :</strong> {{ selectedOffer?.work_mode }}
+          </div>
+          <div class="col-md-12 mb-3">
+          
+            <strong>Contact :</strong> {{ selectedOffer?.contact_email }}
+          </div>
+          <div class="col-md-12 mb-3">
+            <strong>Salaire :</strong> {{ selectedOffer?.full_salary }}
+          </div>
+
+          <div class="col-md-12 mb-3">
+            <strong>Publié le :</strong> {{ selectedOffer?.created_at |  date: 'dd/MM/yyyy H:m:s' }}
+          </div>
+      
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary py-2 px-3 rounded-0 border-0" data-bs-dismiss="modal">Fermer</button>
+        
+    </div>
+  </div>
+</div>
+
+
+

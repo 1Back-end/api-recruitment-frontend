@@ -31,6 +31,10 @@ import {LangagesComponent} from './users/langages/langages.component';
 import {HobbiesComponent} from './users/hobbies/hobbies.component';
 import {OthersComponent} from './users/others/others.component';
 
+import {MyJobOffersComponent} from './owners/my-job-offers/my-job-offers.component';
+import {MyCandidatesComponent} from './owners/my-candidates/my-candidates.component';
+import {MyAccountsComponent} from './owners/my-accounts/my-accounts.component';
+
 export const routes: Routes = [
   {
     path: 'login',
@@ -69,6 +73,22 @@ export const routes: Routes = [
       { path: 'users/others', component:OthersComponent, canActivate: [LoginGuard]},
 
       // Ajoute d'autres routes spécifiques aux users ici
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+    ]
+  },
+
+  {
+    path: 'owners',
+    component : AdminComponent,
+    canActivate : [AuthGuard],
+    children :[
+      { path: 'dashboard', component: DashboardComponent,canActivate: [LoginGuard] },
+      { path: 'owners/my_job_offers', component: MyJobOffersComponent,canActivate: [LoginGuard]},
+      { path: 'owners/my_candidates', component: MyCandidatesComponent,canActivate: [LoginGuard]},
+      { path: 'owners/my_accounts', component: MyAccountsComponent,canActivate: [LoginGuard]},
+
+
+
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },

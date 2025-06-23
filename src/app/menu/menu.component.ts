@@ -72,6 +72,49 @@ export class MenuComponent {
 
 
     {
+      id : 'my_job_offers',
+      path : '/owners/owners/my_job_offers',
+      label: 'Mes offres d\'emploi',
+      icon: 'fa-solid fa-envelope-open-text', // Icône pour réception
+      visibleFor: ["OWNER"],
+      children: [],
+      subMenuRoutes: [],
+    },
+    {
+      id : 'my_candidats',
+      path : '/owners/owners/my_candidates',
+      label: 'Mes Candidats',
+      icon: 'fa-solid fa-users-line', // Icône pour réception
+      visibleFor: ["OWNER"],
+      children: [],
+      subMenuRoutes: [],
+    },
+    {
+      id : 'my_accounts',
+      path : '/owners/owners/my_accounts',
+      label: 'Mon compte',
+      icon: 'fa-solid fa-address-card', // Icône pour réception
+      visibleFor: ["OWNER"],
+      children: [],
+      subMenuRoutes: [],
+    },
+    {
+      id: 'home',
+      path: '/home', // Redirige vers la page d'accueil
+      label: 'Retour à l’accueil',
+      icon: 'fa-solid fa-arrow-left', // Icône de retour
+      visibleFor: ["OWNER"],
+      children: [],
+      subMenuRoutes: [],
+    },
+
+
+
+
+
+
+
+    {
       id : 'diplomas',
       path : '/users/users/diplomas',
       label: 'Mes diplômes',
@@ -134,16 +177,7 @@ export class MenuComponent {
       children: [],
       subMenuRoutes: [],
     },
-    // {
-    //   id : 'accounts',
-    //   path : '/users/my_accounts',
-    //   label: 'Gestion de mon compte',
-    //   icon: 'fa-solid fa-user-secret', // Icône pour réception
-    //   visibleFor: ["CANDIDATE"],
-    //   children: [],
-    //   subMenuRoutes: [],
-    // },
-   
+    
     {
       id: 'home',
       path: '/home', // Redirige vers la page d'accueil

@@ -12,7 +12,7 @@
   </div>
 </div>
 
-<div class="container mt-5 py-5">
+<div class="container-fluid p-md-5 py-5">
   <div *ngIf="data.length; else noCandidates">
     <div class="row">
       <div class="col-lg-6 mb-4" *ngFor="let candidate of data">
@@ -23,13 +23,14 @@
             <div class="col-lg-8 col-sm-12 mb-3">
               <h5 class="fw-bold profile-title">Profil N°{{ candidate.uuid?.slice(-8).toUpperCase() }}</h5>
 
-              <p class="mb-3"><strong>Nom :</strong> {{ candidate.civility }} {{ candidate.first_name }} {{ candidate.last_name }}</p>
+              <p class="mb-3"><strong>Nom complet :</strong> {{ candidate.civility }} {{ candidate.first_name }} {{ candidate.last_name }}</p>
 
               <!-- Expérience -->
               <p class="mb-3">
                 <strong>Dernière expérience :</strong>
                 <span *ngIf="candidate.experiences?.length; else noExperience">
                   {{ candidate.experiences[0]?.job_title }} à {{ candidate.experiences[0]?.company_name }}
+                  ({{ candidate.experiences[0]?.start_date | date: 'dd/MM/yyyy' }} - {{ candidate.experiences[0]?.end_date | date: 'dd/MM/yyyy' }})
                 </span>
                 <ng-template #noExperience>Non renseignée</ng-template>
               </p>
@@ -79,7 +80,7 @@
                 <button 
                   class="btn btn-outline-danger py-3 px-4 rounded-5 fw-bold"
                   (click)="showAuthAlert()">
-                  Connexion requise
+                  Voir le CV complet
                 </button>
               </ng-template>
             </div>
@@ -125,7 +126,7 @@
 </div>
 
 
-<div class="modal fade" id="CvGenarate" tabindex="-1" aria-labelledby="CvGenarateLabel" aria-hidden="true">
+<div class="modal fade" id="CvGenarate" ata-bs-backdrop="static" d="staticBackdrop" data-bs-keyboard="false" tabindex="-1" aria-labelledby="CvGenarateLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content border-0 shadow">
       <div class="modal-header">
@@ -226,7 +227,7 @@
 
              <!-- Diplômes -->
               <div class="mb-4">
-                <h5 class="text-primary mb-3">Liste des diplômes</h5>
+                <h5 class="text-primary mb-3">Diplômes et formations</h5>
                 <div *ngIf="selectedCandidate.diplomas?.length > 0; else noDiploma">
                   <ul class="list-group list-group-flush" style="max-width: 700px;">
                     <li *ngFor="let dip of selectedCandidate.diplomas" class="list-group-item" style="padding: 0.5rem 1rem;">
@@ -265,7 +266,7 @@
 
 
                 <div class="mb-3">
-                  <h5 class="text-primary mb-3">Liste des compétences</h5>
+                  <h5 class="text-primary mb-3">Compétences</h5>
                   <ul class="list-group list-group-flush" style="max-width: 700px;">
                     <li *ngFor="let comp of selectedCandidate.competences" class="list-group-item">
                       <!-- Titre -->
