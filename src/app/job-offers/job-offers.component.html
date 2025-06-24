@@ -67,18 +67,23 @@
                 Voir plus
             </button>
 
-            <!-- Bouton Postuler -->
-            <button 
-              class="btn"
-              [ngClass]="{
-                'btn-outline-primary py-2 px-3 rounded-pill': authService.isAuthenticated() && role.getUserRole() === 'CANDIDATE',
-                'btn-outline-danger py-2 px-3 rounded-pill': !authService.isAuthenticated() || role.getUserRole() !== 'CANDIDATE'
-              }"
-              (click)="openApplicationModal(offer)"
-              data-bs-toggle="modal" data-bs-target="#ApplicationOffers"
-            >
-              Postuler
-            </button>
+              <button 
+                class="btn"
+                [ngClass]="{
+                  'btn-outline-primary py-2 px-3 rounded-pill': authService.isAuthenticated() && role.getUserRole() === 'CANDIDATE',
+                  'btn-outline-danger py-2 px-3 rounded-pill': !authService.isAuthenticated() || role.getUserRole() !== 'CANDIDATE'
+                }"
+                (click)="
+                  authService.isAuthenticated() && role.getUserRole() === 'CANDIDATE'
+                    ? openApplicationModal(offer)
+                    : showAuthAlert()
+                "
+                [attr.data-bs-toggle]="authService.isAuthenticated() && role.getUserRole() === 'CANDIDATE' ? 'modal' : null"
+                [attr.data-bs-target]="authService.isAuthenticated() && role.getUserRole() === 'CANDIDATE' ? '#ApplicationOffers' : null"
+              >
+                Postuler
+              </button>
+
             </div>
 
           </div>

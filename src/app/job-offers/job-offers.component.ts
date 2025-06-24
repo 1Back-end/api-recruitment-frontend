@@ -164,6 +164,7 @@ onFileSelected(event: any, type: 'cv' | 'coverLetter') {
   });
 }
 
+
 submitApplication(): void {
   if (!this.cvUuid || !this.coverLetterUuid || this.isLoading) return;
 
