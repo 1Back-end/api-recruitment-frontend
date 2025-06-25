@@ -177,6 +177,15 @@ export class MenuComponent {
       children: [],
       subMenuRoutes: [],
     },
+    {
+      id : 'medias',
+      path : '/users/users/medias',
+      label: 'Mes réseaux sociaux',
+      icon: 'fa-solid fa-link', // Icône pour réception
+      visibleFor: ["CANDIDATE"],
+      children: [],
+      subMenuRoutes: [],
+    },
     
     {
       id: 'home',
