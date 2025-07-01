@@ -30,10 +30,13 @@ import {CompetencesComponent} from './users/competences/competences.component';
 import {LangagesComponent} from './users/langages/langages.component';
 import {HobbiesComponent} from './users/hobbies/hobbies.component';
 import {OthersComponent} from './users/others/others.component';
+import {MediasComponent} from './users/medias/medias.component';
+import {MyJobOffersUsersComponent} from './users/my-job-offers-users/my-job-offers-users.component';
 
 import {MyJobOffersComponent} from './owners/my-job-offers/my-job-offers.component';
 import {MyCandidatesComponent} from './owners/my-candidates/my-candidates.component';
 import {MyAccountsComponent} from './owners/my-accounts/my-accounts.component';
+
 
 export const routes: Routes = [
   {
@@ -71,6 +74,9 @@ export const routes: Routes = [
       { path: 'users/languages', component:LangagesComponent, canActivate: [LoginGuard]},
       { path: 'users/hobbies', component:HobbiesComponent, canActivate: [LoginGuard]},
       { path: 'users/others', component:OthersComponent, canActivate: [LoginGuard]},
+      { path: 'users/medias', component:MediasComponent, canActivate: [LoginGuard]},
+      { path: 'users/jobs_offers', component:MyJobOffersUsersComponent, canActivate: [LoginGuard]},
+      
 
       // Ajoute d'autres routes spécifiques aux users ici
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }

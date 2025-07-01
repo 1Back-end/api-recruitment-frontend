@@ -9,13 +9,13 @@ import { CONFIG } from '../../../../config';
 import { FormsModule } from '@angular/forms'; 
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 @Component({
-  selector: 'app-competences',
+  selector: 'app-medias',
   imports: [CommonModule, RouterLink, ReactiveFormsModule, FormsModule],
-  templateUrl: './competences.component.html',
-  styleUrl: './competences.component.css'
+  templateUrl: './medias.component.html',
+  styleUrl: './medias.component.css'
 })
-export class CompetencesComponent {
-  
+export class MediasComponent {
+
   data: any[] = [];
   isLoading: boolean = false;
   currentPage: number = 1;
@@ -34,25 +34,23 @@ export class CompetencesComponent {
   constructor(private http: HttpClient,private fb: FormBuilder, private toastr: ToastrService) {4
     this.ServiceForm = this.fb.group({
       title : ['',Validators.required],
-      level : ['',Validators.required],
-      description : [null],
-      is_certified : [false]
+      link : ['',Validators.required],
 
     })
   }
 
   ngOnInit(): void {
-    this.get_my_competences(); // Charger les utilisateurs au démarrage
+    this.get_all_socials_links(); // Charger les utilisateurs au démarrage
   }
 
 
-  get_my_competences(): void {
+  get_all_socials_links(): void {
     this.isLoading = true;
 
     let params = new HttpParams()
       .set('page', this.currentPage.toString())
       .set('per_page', this.titlesPerPage.toString());
-    this.http.get<any>(`${CONFIG.apiUrl}/competences/get-my-competences`, { params }).subscribe(
+    this.http.get<any>(`${CONFIG.apiUrl}/medias/get-my-medias`, { params }).subscribe(
       (response) => {
         this.data = response.data;
         this.currentPage = response.current_page;
@@ -71,23 +69,23 @@ export class CompetencesComponent {
   goToPage(page: number): void {
     if (page < 1 || page > this.totalPages) return;
     this.currentPage = page;
-    this.get_my_competences(); // conserver le filtre
+    this.get_all_socials_links(); // conserver le filtre
   }
 
+  
 
-  SaveCompetences() :void{
+
+  SaveMedias() :void{
     if (this.ServiceForm.invalid || this.isLoading) return;
 
     this.isLoading = true;
-    const formData = { 
-      ...this.ServiceForm.value,
-      is_certificate : this.ServiceForm.value.is_certificate ? '1' : '0',
-     };
+    const formData = this.ServiceForm.value;
+
     if (this.isEditMode) formData.uuid = this.current_uuid;
 
     const url = this.isEditMode 
-    ? `${CONFIG.apiUrl}/competences/update` 
-    : `${CONFIG.apiUrl}/competences/create`;
+    ? `${CONFIG.apiUrl}/medias/update` 
+    : `${CONFIG.apiUrl}/medias/create`;
 
     const request = this.isEditMode 
       ? this.http.put<any>(url, formData) 
@@ -96,7 +94,7 @@ export class CompetencesComponent {
     request.subscribe({
       next: response => {
         this.toastr.success(response.message, 'Succès');
-        this.get_my_competences();
+        this.get_all_socials_links();
         this.ServiceForm.reset();
         this.isEditMode = false;
       },
@@ -109,42 +107,37 @@ export class CompetencesComponent {
 
   }
 
-  onEdit(competence: any): void {
-    this.isLoading = true;
+  onEdit(socialis_link: any): void {
+    // console.log(service);
     this.isEditMode = true;
-    this.current_uuid = competence.uuid;
-    this.http.get<any>(`${CONFIG.apiUrl}/competences/get_competences_by_uuid?uuid=${this.current_uuid}`)
+    this.current_uuid = socialis_link.uuid;
+    this.http.get<any>(`${CONFIG.apiUrl}/medias/get_medias_by_uuid?uuid=${this.current_uuid}`)
       .subscribe({
         next: (data) => {
           // console.log(data);
           this.ServiceForm.patchValue({
             title: data.title || '',
-            description: data.description || '',
-            level : data.level || '',
-            is_certified: data.is_certified === true || data.is_certified === 1
+            link: data.link || '',
           });
-          this.isLoading = false;
         },
-        error: (error:any) => {
-          const message = error?.error?.detail || "Une erreur est survenue.";
-          this.toastr.error(message, 'Erreur');
-          this.isLoading = false;
+        error: (err) => {
+          this.toastr.error('Erreur lors de la récupération des données :', err);
         }
       });
   }
 
-  openDeleteModal(competence: any): void {
-    this.serviceToDelete = competence;
+  openDeleteModal(socialis_link: any): void {
+    this.serviceToDelete = socialis_link;
     // console.log(service)
   }
 
-  deleteCompetences(uuid: string): void {
+  deleteMedias(uuid: string): void {
   const body = { uuid };
-  this.http.put<any>(`${CONFIG.apiUrl}/competences/soft_delete`, body)
+  this.http.put<any>(`${CONFIG.apiUrl}/medias/soft_delete`, body)
     .subscribe(
       (response) => {
         this.toastr.success(response?.message);
-        this.get_my_competences();
+        this.get_all_socials_links();
       },
       (error) => {
         const message = error?.error?.detail || 'Erreur lors de la suppression';

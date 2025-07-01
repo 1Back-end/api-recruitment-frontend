@@ -44,12 +44,21 @@
               </p>
 
 
+              
               <!-- Langues -->
              <p class="mb-3"><strong>Langue :</strong>
               <span *ngIf="candidate.languages?.length; else noLangue">
                 {{ candidate.languages[0]?.title }} ({{ candidate.languages[0]?.level.toLowerCase() }})
               </span>
               <ng-template #noLangue>Non renseignée</ng-template>
+            </p>
+
+             <!-- Langues -->
+             <p class="mb-3"><strong>Réseau sociau :</strong>
+              <span *ngIf="candidate.medias?.length; else noMedias">
+                {{ candidate.medias[0]?.title }} ({{ candidate.medias[0]?.link }})
+              </span>
+              <ng-template #noMedias>Non renseignée</ng-template>
             </p>
 
 
@@ -192,6 +201,18 @@
                 </div>
               </div>
 
+              <div class="mb-3" *ngIf="selectedCandidate.medias?.length > 0">
+              <h6 class="text-white mt-4 mb-3">Réseaux sociaux</h6>
+              
+              <ul class="list-inline mb-0 ps-1">
+                <li class="list-inline-item me-2 mb-2" *ngFor="let media of selectedCandidate.medias">
+                  <span class="badge bg-light text-dark px-3 py-2 rounded-pill">
+                   {{ media.link }}
+                  </span>
+                </li>
+              </ul>
+            </div>
+
 
               <div class="mb-3" *ngIf="selectedCandidate.hobbies?.length > 0">
               <h6 class="text-white mt-4 mb-3">Centres d'intérêt</h6>
@@ -307,9 +328,7 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary shadow-none border-0 rounded-0" data-bs-dismiss="modal">Fermer</button>
-        <button class="btn btn-success shadow-none border-0 rounded-0">
-          <i class="fa fa-download me-1"></i> Télécharger
-        </button>
+        
       </div>
     </div>
   </div>
