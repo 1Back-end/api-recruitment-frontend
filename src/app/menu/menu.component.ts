@@ -169,8 +169,8 @@ export class MenuComponent {
       subMenuRoutes: [],
     },
     {
-      id : 'job_offers',
-      path : '/users/my_offers',
+      id : 'jobs_offers',
+      path : '/users/users/jobs_offers',
       label: 'Mes offres d\'emploi',
       icon: 'fa-solid fa-envelope-open-text', // Icône pour réception
       visibleFor: ["CANDIDATE"],

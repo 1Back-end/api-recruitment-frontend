@@ -110,7 +110,7 @@ export class CompetencesComponent {
   }
 
   onEdit(competence: any): void {
-    // console.log(service);
+    this.isLoading = true;
     this.isEditMode = true;
     this.current_uuid = competence.uuid;
     this.http.get<any>(`${CONFIG.apiUrl}/competences/get_competences_by_uuid?uuid=${this.current_uuid}`)
@@ -123,9 +123,12 @@ export class CompetencesComponent {
             level : data.level || '',
             is_certified: data.is_certified === true || data.is_certified === 1
           });
+          this.isLoading = false;
         },
-        error: (err) => {
-          this.toastr.error('Erreur lors de la récupération des données :', err);
+        error: (error:any) => {
+          const message = error?.error?.detail || "Une erreur est survenue.";
+          this.toastr.error(message, 'Erreur');
+          this.isLoading = false;
         }
       });
   }
