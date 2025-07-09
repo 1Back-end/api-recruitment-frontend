@@ -36,6 +36,7 @@ import {MyJobOffersUsersComponent} from './users/my-job-offers-users/my-job-offe
 import {MyJobOffersComponent} from './owners/my-job-offers/my-job-offers.component';
 import {MyCandidatesComponent} from './owners/my-candidates/my-candidates.component';
 import {MyAccountsComponent} from './owners/my-accounts/my-accounts.component';
+import {DetailsCandidatesComponent} from './owners/details-candidates/details-candidates.component';
 
 
 export const routes: Routes = [
@@ -92,6 +93,9 @@ export const routes: Routes = [
       { path: 'owners/my_job_offers', component: MyJobOffersComponent,canActivate: [LoginGuard]},
       { path: 'owners/my_candidates', component: MyCandidatesComponent,canActivate: [LoginGuard]},
       { path: 'owners/my_accounts', component: MyAccountsComponent,canActivate: [LoginGuard]},
+      { path: 'details_candidates', component: DetailsCandidatesComponent, canActivate: [LoginGuard] },
+
+
 
 
 

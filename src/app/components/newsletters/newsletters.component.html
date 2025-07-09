@@ -1,16 +1,39 @@
-<!-- <div class="container my-5">
-  <div class="newsletter-subscribe p-4 bg-light rounded shadow-sm">
+<div class="container my-5">
+  <div class="newsletter-subscribe p-5 bg-white rounded-0  shadow-sm border-0">
     <div class="text-center mb-4">
-      <h2 class="fw-bold text-primary">Inscrivez-vous à notre Newsletter</h2>
+      <h2 class="fw-bold text-primary">Abonnez-vous à notre Newsletter</h2>
       <p class="text-muted">
-        Restez informé des dernières offres d’emploi, des actualités du secteur IT et des opportunités de carrière.
+       Recevez les dernières <strong>offres d’emploi</strong>, les <strong>actualités du secteur</strong> et des <strong>conseils carrière</strong> pour booster votre avenir professionnel.
       </p>
     </div>
-    <form class="d-flex justify-content-center" method="post">
+
+    <form [formGroup]="ServiceForm" (ngSubmit)="Save()" class="d-flex justify-content-center" method="post">
       <div class="input-group w-75">
-        <input type="email" name="email" class="form-control rounded-2" placeholder="Votre adresse e-mail" required>
-        <button type="submit" class="btn btn-primary px-4">S'inscrire</button>
+        <input
+          type="email"
+          formControlName="email"
+          class="form-control rounded-start"
+          placeholder="Entrez votre adresse e-mail"
+          [ngClass]="{'is-invalid': ServiceForm.get('email')?.invalid && ServiceForm.get('email')?.touched}"
+          required
+        />
+        <button
+          type="submit"
+          class="btn btn-primary rounded-end d-flex align-items-center px-4"
+          [disabled]="ServiceForm.invalid || isLoading"
+        >
+          <ng-container *ngIf="!isLoading; else loadingTpl">
+            S’inscrire
+          </ng-container>
+          <ng-template #loadingTpl>
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Envoi...
+          </ng-template>
+        </button>
+        <div *ngIf="ServiceForm.get('email')?.invalid && ServiceForm.get('email')?.touched" class="invalid-feedback d-block text-center w-100 mt-2">
+          Veuillez entrer une adresse e-mail valide.
+        </div>
       </div>
     </form>
   </div>
-</div> -->
+</div>
