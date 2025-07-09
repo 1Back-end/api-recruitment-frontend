@@ -33,6 +33,7 @@ export class MyCandidatesComponent {
 
   selectedStatus: string = '';
   selectedJob: any = null;
+  candidates: any[] = []; // ✅ déclaration initiale
 
   constructor(private http: HttpClient,private fb: FormBuilder, private toastr: ToastrService) {4
     this.ServiceForm = this.fb.group({
@@ -80,6 +81,27 @@ export class MyCandidatesComponent {
     this.currentPage = page;
     this.get_all_my_candidates(); // conserver le filtre
   }
+
+DetailsCandidats(application: any) {
+  console.log(">> Appel de DetailsCandidats", application); // 🧪
+  this.isLoading = true;
+  this.current_uuid = application.uuid;
+  this.candidates = [];
+
+  this.http.get(`${CONFIG.apiUrl}/applications/get_candidat_by_application?uuid=${this.current_uuid}`)
+    .subscribe({
+      next: (res: any) => {
+        console.log(">> Résultat de l'API", res); // 🧪
+        this.candidates = Array.isArray(res) ? res : [res];
+        this.isLoading = false;
+      },
+      error: err => {
+        console.error(">> Erreur API", err);
+        this.candidates = [];
+        this.isLoading = false;
+      }
+    });
+}
 
 
 

@@ -25,6 +25,7 @@
                          <th scope="col">Lettre de motivation</th>
                         <th scope="col">Postulé le</th>
                         <th scope="col">Statut</th>
+                        <th>Actions</th>
                        
                     </tr>
                 </thead>
@@ -74,6 +75,15 @@
                             </span>
                       
                         </td>
+                        <td>
+                           <a 
+                            (click)="DetailsCandidats(applications)" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#DetailsCandidats" 
+                            class="btn btn-primary btn-sm border-0 rounded-0">
+                            Voir les candidats
+                            </a>
+                        </td>
                     </tr>
                     </ng-container>
                 </tbody>
@@ -114,3 +124,75 @@
         </div>
     </div>
 
+    <!-- Modal -->
+<div class="modal fade" id="DetailsCandidats" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="DetailsCandidats" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-body">
+        <!-- Titre -->
+        <div class="alert alert-warning border-0 mb-3 text-center text-uppercase" role="alert">
+          Liste des candidats ayant postulé à l'offre d'emploi <b>{{ data[0]?.job_offer.title }}</b>
+        </div>
+
+        <!-- Loader -->
+        <div *ngIf="isLoading" class="text-center py-4">
+          <i class="fas fa-spinner fa-spin fa-2x text-primary mx-1"></i><br>
+          <small>Chargement...</small>
+        </div>
+
+        <!-- Liste des candidats -->
+        <div *ngIf="!isLoading && candidates.length > 0" class="row">
+          <div *ngFor="let c of candidates" class="col-12 col-md-6 col-xl-4 mb-4">
+            <div class="p-3 border rounded-2 h-100 d-flex flex-column justify-content-between">
+              <!-- Nom -->
+              <h5 class="mb-2 text-primary">
+                {{ c.candidate.civility }} {{ c.candidate.first_name }} {{ c.candidate.last_name }}
+              </h5>
+
+              <!-- Infos personnelles -->
+              <h6 class="text-secondary mb-1"><i class="fas fa-id-card mx-1"></i> Informations :</h6>
+              <ul class="ps-3 small mb-2">
+                <li class="mb-3"><strong>Email :</strong> {{ c.candidate.email }}</li>
+                <li class="mb-3"><strong>Téléphone :</strong> {{ c.candidate.phone_number }}</li>
+                <li class="mb-3"><strong>Poste :</strong> {{ c.candidate.personals[0]?.professional_title }}</li>
+              </ul>
+
+              <!-- Diplômes -->
+              <h6 class="text-secondary"><i class="fas fa-graduation-cap mx-1"></i> Diplômes :</h6>
+              <ul class="ps-3 small mb-2">
+                <li *ngFor="let d of c.candidate.diplomas">
+                  {{ d.degree_name }} - {{ d.institution_name }}<br>
+                  <small class="text-muted">({{ d.start_year }} - {{ d.end_year }})</small>
+                </li>
+              </ul>
+
+              <!-- Médias sociaux -->
+              <h6 class="text-secondary"><i class="fas fa-share-alt mx-1"></i> Médias :</h6>
+              <ul class="ps-3 small mb-2 text-decoration-none">
+                <li *ngFor="let m of c.candidate.medias">
+                  <strong>{{ m.title }} :</strong>
+                  <a [href]="m.link" class="text-decoration-none" target="_blank">{{ m.link }}</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Aucun candidat -->
+        <div *ngIf="!isLoading && candidates.length === 0" class="text-center text-muted py-3">
+          <i class="fas fa-user-slash fa-2x mb-2 mx-1"></i><br>
+          Aucun candidat trouvé pour cette offre.
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-secondary border-0 rounded-0" data-bs-dismiss="modal">
+          <i class="fas fa-times mx-1"></i> Fermer
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

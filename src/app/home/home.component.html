@@ -3,75 +3,44 @@
 <br><br><br><br><br>
 
 
-<div class="container-fluid py-5 position-relative overflow-hidden vh-75">
-  <!-- Image de fond -->
-  <img src="assets/images/img_home.png"
-       alt="Image de fond"
-       class="bg-image-animated" />
-
-  <!-- Contenu visible (les deux blocs) -->
-  <div class="position-relative" style="z-index: 2;">
-    <!-- Bloc avec les boutons -->
-    <div class="container p-3 bg-light mb-5 rounded-3">
+<div class="container-fluid position-relative overflow-hidden py-5" 
+     style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+            url('assets/images/inscription-recruteur.png') center/cover no-repeat;
+            color: white; min-height: 60vh;">
+  <div class="position-relative z-2">
+    <div class="container text-center py-5">
+      <h2 class="fw-bold mb-4">Rejoignez notre plateforme</h2>
       <div class="row justify-content-center gap-3 gap-md-0">
         <div class="col-auto">
-          <a routerLink="/candidates/create-account" class="btn btn-primary py-3 px-4 rounded-5 text-white fw-bold">
+          <a routerLink="/candidates/create-account" class="btn btn-light py-3 px-4 rounded-5 fw-bold">
             <i class="fa-solid fa-cloud-arrow-up me-1"></i>
             Candidat : Déposez votre CV
           </a>
         </div>
         <div class="col-auto">
-          <a routerLink="/owners/create-account" class="btn btn-primary py-3 px-4 rounded-5 text-white fw-bold">
+          <a routerLink="/owners/create-account" class="btn btn-outline-light py-3 px-4 rounded-5 fw-bold">
             <i class="fas fa-bullhorn me-2"></i>
             Recruteur : Publiez une offre d'emploi
           </a>
         </div>
       </div>
     </div>
-
-    <!-- Bloc du formulaire de recherche -->
-    <div class="container-fluid p-md-5 py-5">
-      <div class="bg-white p-4 shadow border-0 rounded-3">
-        <form>
-          <div class="row justify-content-center align-items-end g-3">
-            <div class="col-md-3">
-              <label for="motcle" class="form-label fw-bold">Mot clé</label>
-              <input type="text" id="motcle" class="form-control" placeholder="Ex: développeur, comptable...">
-            </div>
-            <div class="col-md-3">
-              <label for="region" class="form-label fw-bold">Région</label>
-              <select id="region" class="form-select cursor-pointer">
-                <option selected disabled>Choisir une région</option>
-                <option>Centre</option>
-                <option>Littoral</option>
-                <option>Ouest</option>
-                <option>Nord</option>
-              </select>
-            </div>
-            <div class="col-md-3">
-              <label for="metier" class="form-label fw-bold">Métier</label>
-              <input type="text" id="metier" class="form-control" placeholder="Ex: ingénieur, enseignant...">
-            </div>
-            <div class="col-md-2 d-grid">
-              <button type="submit" class="btn btn-success mt-2">Valider</button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
   </div>
-</div>
+<!-- </div> -->
+
+<!-- </div>
+</div> -->
 
 
 
 <div class="container-fluid p-md-5 py-5">
-  <h2 class="text-center fw-bold mb-4 title">Les entreprises qui recrutent</h2>
+  <h2 class="text-center fw-bold mb-4">Les entreprises qui recrutent</h2>
   <p class="text-center text-muted mb-4">
     Découvrez les entreprises qui recrutent actuellement et explorez leurs offres d'emploi.
   </p>
 
   <!-- Chargement -->
-  <div class="text-center my-5" *ngIf="isLoading">
+  <div class="text-center my-5" *ngIf="isLoadingCompanies">
     <div class="spinner-border text-primary" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>
@@ -79,7 +48,7 @@
   </div>
 
   <!-- Aucune entreprise -->
-  <div *ngIf="!isLoading && company.length === 0" class="text-center">
+  <div *ngIf="!isLoadingCompanies && company.length === 0" class="text-center">
     <img src="assets/images/404.png" alt="Aucune entreprise" style="max-width: 300px;" class="mb-3">
     <p class="text-muted">Aucune entreprise disponible pour le moment.</p>
   </div>
@@ -116,7 +85,7 @@
 
           <!-- Logo -->
           <div style="flex-shrink: 0;">
-            <img [src]="c.logo?.url || 'assets/images/logo_company.png'" 
+            <img [src]="c.logo?.url || 'assets/images/logo_pro.jpg'" 
                 alt="Logo {{ c.name }}" 
                 class="rounded-circle" 
                 style="width: 80px; height: 80px; object-fit: cover;">
@@ -127,17 +96,88 @@
   </div>
 
    <!-- Pagination -->
-    <div class="text-center mt-4" *ngIf="totalPages > 1">
-      <div class="text-center mt-4" *ngIf="currentPage < totalPages">
-        <button class="btn btn-primary py-3 px-4 rounded-5 text-white fw-bold" (click)="loadMore()">Voir plus de d'entreprises</button>
+    <div class="text-center mt-4" *ngIf="currentCompanyPage > 1">
+      <div class="text-center mt-4" *ngIf="companiesPerPage < currentCompanyPage">
+        <button class="btn btn-primary py-3 px-4 rounded-5 text-white fw-bold" (click)="loadMoreCompanies()">Voir plus de d'entreprises</button>
       </div>
     </div>
 </div>
 
+
+
+
+<div class="container-fluid my-5">
+  <h2 class="fw-bold text-center mb-4">Derniers profils enregistrés</h2>
+
+  <div *ngIf="candidates.length > 0; else noData">
+    <div class="row g-4">
+      <div class="col-md-4" *ngFor="let candidate of candidates">
+        <div class="card border-0 shadow-lg h-100 p-4">
+          <div class="d-flex align-items-center gap-3">
+            <!-- Avatar -->
+            <img
+              [src]="candidate.avatar?.url || 'assets/images/profile_user.png'"
+              alt="Avatar"
+              class="rounded-circle border"
+              style="width: 70px; height: 70px; object-fit: cover;"
+            />
+
+            <!-- Infos -->
+            <div class="flex-grow-1">
+              <h5 class="fw-bold mb-1 text-capitalize">
+                {{ candidate.first_name }} {{ candidate.last_name }}
+              </h5>
+              <p class="mb-1 text-muted small">
+                <i class="bi bi-person-fill me-2"></i>
+                {{ candidate.civility }}
+              </p>
+              <p class="mb-1 text-muted small">
+                <i class="bi bi-briefcase-fill me-2"></i>
+                <span *ngIf="candidate.experiences?.length; else noExp">
+                  {{ candidate.experiences[0]?.job_title }} chez {{ candidate.experiences[0]?.company_name }}
+                </span>
+                <ng-template #noExp>Aucune expérience</ng-template>
+              </p>
+              <p class="mb-1 text-muted small">
+                <i class="bi bi-mortarboard-fill me-2"></i>
+                <span *ngIf="candidate.diplomas?.length; else noDip">
+                  {{ candidate.diplomas[0]?.degree_name }} - {{ candidate.diplomas[0]?.institution_name }}
+                </span>
+                <ng-template #noDip>Pas de diplôme</ng-template>
+              </p>
+            </div>
+          </div>
+
+          <!-- Voir CV complet -->
+          <!-- <div class="text-end mt-3">
+            <button
+              class="btn btn-outline-primary rounded-pill px-4 py-2"
+              (click)="authService.isAuthenticated() && role.getUserRole() === 'OWNER' ? loadCV(candidate) : showAuthAlert()"
+              [attr.data-bs-toggle]="authService.isAuthenticated() && role.getUserRole() === 'OWNER' ? 'modal' : null"
+              [attr.data-bs-target]="authService.isAuthenticated() && role.getUserRole() === 'OWNER' ? '#CvGenarate' : null"
+            >
+              <i class="bi bi-eye-fill me-2"></i>Voir le CV
+            </button> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Aucun candidat -->
+  <ng-template #noData>
+    <div class="alert alert-info text-center mt-4">
+      Aucun profil disponible pour le moment.
+    </div>
+  </ng-template>
+</div>
+
+
+
+
 <div class="container-fluid py-5">
   
 <app-newsletters></app-newsletters>
-
 
 </div>
 
