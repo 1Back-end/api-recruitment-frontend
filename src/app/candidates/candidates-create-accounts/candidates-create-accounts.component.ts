@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink,Router,ActivatedRoute } from '@angular/router';
 import {NavbarComponent } from '../../components/navbar/navbar.component';
 import { AngularPhoneNumberInput } from 'angular-phone-number-input';
 import { CommonModule } from '@angular/common';
@@ -23,7 +23,7 @@ export class CandidatesCreateAccountsComponent {
   ServiceForm : FormGroup;
   isLoading: boolean = false;
 
-  constructor(private fb: FormBuilder, private toastr: ToastrService,private http: HttpClient,private location: Location) {
+  constructor(private fb: FormBuilder, private toastr: ToastrService,private http: HttpClient,private location: Location,private router: Router,) {
     this.ServiceForm = this.fb.group({
       civility : ['',Validators.required],
       first_name: ['', Validators.required],
@@ -43,8 +43,8 @@ export class CandidatesCreateAccountsComponent {
     (response) => {
       this.toastr.success(response.message || 'Votre compte a été crée avec succès');
       this.isLoading = false; // Stop loader
-      this.ServiceForm.reset()
-      this.location.back();
+      this.router.navigate(['/home']);
+      
     },
     (error) => {
       const message = error?.error?.detail || "Erreur lors de l'enregistrement";

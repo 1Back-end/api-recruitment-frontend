@@ -1,0 +1,84 @@
+<form [formGroup]="UserForm" (ngSubmit)="updateProfil()">
+  <div class="col-lg-8 col-sm-12 rounded-0 border-0 shadow-lg bg-white  mb-5">
+    <div class="row">
+      <!-- Colonne Avatar -->
+      <div class="col-md-3 border-right">
+        <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+          <img
+            class="rounded-circle mt-5"
+            [style.width.px]="150"
+            [style.height.px]="150"
+            [style.object-fit]="'cover'"
+            [src]="filePreview || fileUrl || 'assets/images/logo_pro.jpg'"
+            alt="avatar"
+          />
+          <span class="text-black-50">{{ UserForm.get('email')?.value }}</span>
+
+          <input type="file" (change)="onFileSelected($event)" accept="image/*" class="form-control mt-3" />
+          <button class="btn btn-sm btn-danger mt-2" (click)="removeFile()" *ngIf="fileUrl || filePreview">Supprimer l'avatar</button>
+        </div>
+      </div>
+
+      <!-- Colonne Informations -->
+      <div class="col-md-9">
+        <div class="p-3 py-5">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="text-right">Paramètres du profil</h4>
+          </div>
+
+          <div class="row mt-2">
+            <div class="col-md-6">
+              <label class="labels">Prénom</label>
+              <input type="text" class="form-control" placeholder="Prénom" formControlName="first_name" />
+            </div>
+            <div class="col-md-6">
+              <label class="labels">Nom</label>
+              <input type="text" class="form-control" placeholder="Nom" formControlName="last_name" />
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <label class="labels">Login</label>
+              <input type="text" class="form-control" placeholder="Login" formControlName="login" />
+            </div>
+
+            <div class="col-md-6">
+              <label class="labels">Email</label>
+              <input type="email" class="form-control" placeholder="Email" formControlName="email" />
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-lg-6 mb-3">
+              <label class="labels">Numéro de téléphone</label>
+              <angular-phone-number-input
+                id="phone_number"
+                formControlName="phone_number"
+                [defaultCountry]="'CM'"
+                [preferredCountries]="[]"
+                [ngClass]="{ 'is-invalid': UserForm.get('phone_number')?.invalid && UserForm.get('phone_number')?.touched }"
+              >
+              </angular-phone-number-input>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <button 
+              type="submit"
+              class="btn btn-primary profile-button border-0 rounded-0 py-2 px-3"
+              [disabled]="isLoading || UserForm.invalid"
+            >
+              <span *ngIf="isLoading">
+                <i class="fa fa-spinner fa-spin me-2"></i> Enregistrement...
+              </span>
+              <span *ngIf="!isLoading">
+                Mettre à jour
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

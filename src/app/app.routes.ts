@@ -37,8 +37,7 @@ import {MyJobOffersComponent} from './owners/my-job-offers/my-job-offers.compone
 import {MyCandidatesComponent} from './owners/my-candidates/my-candidates.component';
 import {MyAccountsComponent} from './owners/my-accounts/my-accounts.component';
 import {DetailsCandidatesComponent} from './owners/details-candidates/details-candidates.component';
-
-
+import { ProfileUsersComponent } from './profile-users/profile-users.component';
 export const routes: Routes = [
   {
     path: 'login',
@@ -49,15 +48,15 @@ export const routes: Routes = [
   // ADMIN ROUTES
   {
     path: 'admin',
-    component: AdminComponent, // ou AdminLayoutComponent
+    component: AdminComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: 'dashboard', component: DashboardComponent,canActivate: [LoginGuard] },
-      { path: 'users', component: UtilisateursComponent,canActivate: [LoginGuard] },
-      { path: 'users/add', component: AddUtilisateursComponent,canActivate: [LoginGuard] },
-      { path: 'users/edit/:uuid', component: EditUtilisateursComponent,canActivate: [LoginGuard] },
-      { path: 'main/company', component: CompanyComponent,canActivate: [LoginGuard] },
-      { path: 'main/owners', component: OwnersComponent,canActivate: [LoginGuard] },
+      { path: 'dashboard', component: DashboardComponent, canActivate: [LoginGuard] },
+      { path: 'users', component: UtilisateursComponent, canActivate: [LoginGuard] },
+      { path: 'users/add', component: AddUtilisateursComponent, canActivate: [LoginGuard] },
+      { path: 'users/edit/:uuid', component: EditUtilisateursComponent, canActivate: [LoginGuard] },
+      { path: 'main/company', component: CompanyComponent, canActivate: [LoginGuard] },
+      { path: 'main/owners', component: OwnersComponent, canActivate: [LoginGuard] },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
@@ -65,45 +64,48 @@ export const routes: Routes = [
   // USER ROUTES
   {
     path: 'users',
-    component: AdminComponent, // 👈 même layout que l'admin
+    component: AdminComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: 'dashboard', component: DashboardComponent,canActivate: [LoginGuard] },
-      { path: 'users/diplomas', component: DiplomasComponent,canActivate: [LoginGuard] },
-      { path : 'users/experiences', component:ExperiencesComponent,canActivate:[LoginGuard]},
-      { path: 'users/competences', component: CompetencesComponent,canActivate: [LoginGuard] },
-      { path: 'users/languages', component:LangagesComponent, canActivate: [LoginGuard]},
-      { path: 'users/hobbies', component:HobbiesComponent, canActivate: [LoginGuard]},
-      { path: 'users/others', component:OthersComponent, canActivate: [LoginGuard]},
-      { path: 'users/medias', component:MediasComponent, canActivate: [LoginGuard]},
-      { path: 'users/jobs_offers', component:MyJobOffersUsersComponent, canActivate: [LoginGuard]},
-      
-
-      // Ajoute d'autres routes spécifiques aux users ici
+      { path: 'dashboard', component: DashboardComponent, canActivate: [LoginGuard] },
+      { path: 'users/diplomas', component: DiplomasComponent, canActivate: [LoginGuard] },
+      { path: 'users/experiences', component: ExperiencesComponent, canActivate: [LoginGuard] },
+      { path: 'users/competences', component: CompetencesComponent, canActivate: [LoginGuard] },
+      { path: 'users/languages', component: LangagesComponent, canActivate: [LoginGuard] },
+      { path: 'users/hobbies', component: HobbiesComponent, canActivate: [LoginGuard] },
+      { path: 'users/others', component: OthersComponent, canActivate: [LoginGuard] },
+      { path: 'users/medias', component: MediasComponent, canActivate: [LoginGuard] },
+      { path: 'users/jobs_offers', component: MyJobOffersUsersComponent, canActivate: [LoginGuard] },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
 
+  // OWNER ROUTES
   {
     path: 'owners',
-    component : AdminComponent,
-    canActivate : [AuthGuard],
-    children :[
-      { path: 'dashboard', component: DashboardComponent,canActivate: [LoginGuard] },
-      { path: 'owners/my_job_offers', component: MyJobOffersComponent,canActivate: [LoginGuard]},
-      { path: 'owners/my_candidates', component: MyCandidatesComponent,canActivate: [LoginGuard]},
-      { path: 'owners/my_accounts', component: MyAccountsComponent,canActivate: [LoginGuard]},
+    component: AdminComponent,
+    canActivate: [AuthGuard],
+    children: [
+      { path: 'dashboard', component: DashboardComponent, canActivate: [LoginGuard] },
+      { path: 'owners/my_job_offers', component: MyJobOffersComponent, canActivate: [LoginGuard] },
+      { path: 'owners/my_candidates', component: MyCandidatesComponent, canActivate: [LoginGuard] },
+      { path: 'owners/my_accounts', component: MyAccountsComponent, canActivate: [LoginGuard] },
       { path: 'details_candidates', component: DetailsCandidatesComponent, canActivate: [LoginGuard] },
-
-
-
-
-
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
 
-  // AUTRES ROUTES PUBLIQUES
+  // PROFIL COMMUN À TOUS (TOUS LES RÔLES CONNECTÉS)
+  {
+    path: 'profile_users',
+    component: AdminComponent,
+    canActivate: [AuthGuard],
+    children: [
+      { path: '', component: ProfileUsersComponent }
+    ]
+  },
+
+  // ROUTES PUBLIQUES
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
   { path: 'create-account', component: CreateAccountComponent },
@@ -117,5 +119,5 @@ export const routes: Routes = [
   { path: 'auth/change-password', component: ChangePasswordComponent, canActivate: [AuthGuard] },
   { path: 'auth/forgot-password', component: ForgotPasswordComponent },
   { path: 'auth/code-otp', component: CodeOtpComponent },
-  { path: 'auth/reset-password', component: ResetPasswordComponent },
+  { path: 'auth/reset-password', component: ResetPasswordComponent }
 ];

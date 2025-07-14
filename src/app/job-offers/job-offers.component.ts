@@ -21,8 +21,6 @@ import {FooterComponent} from '../components/footer/footer.component';
   styleUrl: './job-offers.component.css'
 })
 export class JobOffersComponent {
-
-
   
   data: any[] = [];
   isLoading: boolean = false;

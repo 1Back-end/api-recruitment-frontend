@@ -13,9 +13,10 @@ import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import {RoleService } from '../services/role.service';
 import { ElementRef, ViewChild, Inject, PLATFORM_ID } from '@angular/core';
 import { AuthService } from '../services/auth.service';
+import {FooterComponent} from '../components/footer/footer.component';
 @Component({
   selector: 'app-candidates',
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, FormsModule,NavbarComponent],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, FormsModule,NavbarComponent,FooterComponent],
   templateUrl: './candidates.component.html',
   styleUrl: './candidates.component.css'
 })

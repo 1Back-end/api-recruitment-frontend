@@ -15,7 +15,7 @@
 <div class="container-fluid p-md-5 py-5">
   <div *ngIf="data.length; else noCandidates">
     <div class="row">
-      <div class="col-lg-6 mb-4" *ngFor="let candidate of data">
+      <div class="col-lg-4 mb-4" *ngFor="let candidate of data">
         <div class="card h-100 shadow-lg border-0 p-3 py-5">
           <div class="row g-0 align-items-center">
             
@@ -69,6 +69,7 @@
             </span>
             <ng-template #noCompetence>Non renseigné</ng-template>
           </p>
+          <p class="mb-3"><strong>Disponible depuis le : </strong> {{ candidate.date_added | date: 'dd/MM/yyyy HH:mm:ss' }}</p>
 
 
                           <!-- Voir plus -->
@@ -112,9 +113,10 @@
                   style="width: 100px; height: 100px; object-fit: cover;">
               </ng-template>
             </div>
-
           </div>
+          
         </div>
+        
       </div>
     </div>
 
@@ -333,3 +335,6 @@
     </div>
   </div>
 </div>
+
+
+<app-footer></app-footer>
